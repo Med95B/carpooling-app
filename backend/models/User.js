@@ -23,24 +23,26 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  role: {
-    type: String,
-    enum: ['driver', 'passenger'],
-    default: 'passenger'
+  isDriver: {
+    type: Boolean,
+    default: false
   },
   vehicleInfo: {
-    // Informations sur le véhicule du conducteur
-    type: {
-      make: String,
-      model: String,
-      year: Number
-    },
-    required: function() {
-      return this.role === 'driver';
-    }
-  },
-  // Autres champs selon vos besoins
-});
+    make: String,
+    model: String,
+    year: Number,
+    // Les images du conducteur et du véhicule
+    driverLicenseImage: String,
+    vehicleRegistrationImage: String,
+    vehicleInsuranceImage: String,
+    vehicleImage: String
+  }
+
+}, 
+{
+  timestamps:true
+}
+);
 
 const User = mongoose.model('User', userSchema);
 

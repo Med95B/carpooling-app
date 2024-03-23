@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser, selectStatus, selectError } from '../../store/userSlice.js';
-import { Link } from 'react-router-dom';
+import { Link,useNavigate } from 'react-router-dom';
 
 const LoginForm = () => {
   const dispatch = useDispatch();
   const status = useSelector(selectStatus);
   const error = useSelector(selectError);
-
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -17,9 +17,16 @@ const LoginForm = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch(loginUser(formData));
+    try {
+      const res = await dispatch(loginUser(formData));
+      if (res.payload) {
+        navigate('/userRole'); 
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (

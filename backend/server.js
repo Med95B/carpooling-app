@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import connectDB from './config/db.js';
 import userRoutes from './routes/userRoutes.js';
+import rideRoutes from './routes/rideRoutes.js';
 import errorMiddleware from './middlewares/errorMiddleware.js';
 import dotenv from 'dotenv';
 
@@ -20,8 +21,8 @@ app.use(errorMiddleware);
 connectDB();
 
 // Routes
-app.use('/api/users', userRoutes);
-
+app.use('/api', userRoutes);
+app.use('/api', rideRoutes);
 //server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

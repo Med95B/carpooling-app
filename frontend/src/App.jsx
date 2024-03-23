@@ -1,8 +1,10 @@
 
-import { BrowserRouter as Router, Routes, Route, Navigate  } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import RegisterForm from './components/auth/RegisterForm.jsx';
 import LoginForm from './components/auth/LoginForm.jsx';
 import Navbar from './components/layout/Navbar.jsx';
+import ProtectedRoute from './components/auth/ProtectedRoute.jsx';
+import UserRole from './components/user/userRole.jsx';
 
 const App = () => {
   return (
@@ -13,8 +15,7 @@ const App = () => {
       <Routes>
         <Route path="/register" element={<RegisterForm />} />
         <Route path="/" element={<LoginForm />} />
-        {/* Redirection après l'inscription */}
-        <Route path="/register-success" element={<Navigate to="/" />} />
+        <Route path="/role" element={<ProtectedRoute><UserRole /></ProtectedRoute>} />
       </Routes>
     </div>
   </Router>
