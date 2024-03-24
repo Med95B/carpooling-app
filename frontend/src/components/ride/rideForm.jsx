@@ -1,29 +1,20 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createRide, selectRidesStatus, selectRidesError } from '../../store/rideSlice.js'; 
-import { selectUser } from '../../store/userSlice.js'; 
 import { Link } from 'react-router-dom';
 
-const PassengerForm = () => {
+const RideForm = () => {
   const [departure, setDeparture] = useState('');
   const [arrival, setArrival] = useState('');
-  const user = useSelector(selectUser); 
-  console.log(user);
   const status = useSelector(selectRidesStatus);
   const error = useSelector(selectRidesError);
   const dispatch = useDispatch();
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(createRide({ user: user.userId,departure, arrival }));
+    dispatch(createRide({ departure, arrival }));
     setDeparture('');
     setArrival('');
   };
-
-  // Afficher un message de chargement si le user n'est pas encore défini
-  if (!user) {
-    return <h1 className='text-center'>Loading...</h1>;
-  }
 
   return (
     <div className="container mt-5">
@@ -54,7 +45,7 @@ const PassengerForm = () => {
         </div>
         <button type="submit" className="btn btn-primary">Enregistrer</button>
       </form>
-      <Link to="/trip" className="btn btn-success mt-3">Go for trip</Link> 
+     <Link to={'/role'} className="btn btn-success mt-3">Go for trip</Link>
       {status === 'failed' && (
         <div className="alert alert-danger mt-5" role="alert">
           {error}
@@ -69,5 +60,5 @@ const PassengerForm = () => {
   );
 };
 
-export default PassengerForm;
+export default RideForm;
 

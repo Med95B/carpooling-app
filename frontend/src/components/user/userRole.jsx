@@ -1,20 +1,18 @@
-import { useSelector, useDispatch } from 'react-redux';
-import { updateUserRole, selectUser } from '../../store/userSlice.js';
+import {  useDispatch } from 'react-redux';
+import { updateUserRole } from '../../store/userSlice.js';
 import {useNavigate} from 'react-router-dom'
 
 const UserRole = () => {
-  const user = useSelector(selectUser);
   const dispatch = useDispatch();
 const navigate=useNavigate()
-
   const handleDriverSelect = () => {
-    dispatch(updateUserRole({ userId: user._id, isDriver: true }));
-    navigate('/driver')
+    dispatch(updateUserRole({ isDriver: true }));
+    navigate('/trip/driver')
   };
 
   const handlePassengerSelect = () => {
-    dispatch(updateUserRole({ userId: user._id, isDriver: false }));
-  navigate('/passenger')
+    dispatch(updateUserRole({ isDriver: false }));
+  navigate('/trip/passenger')
   };
 
   return (

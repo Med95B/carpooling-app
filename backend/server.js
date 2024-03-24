@@ -3,6 +3,7 @@ import cors from 'cors';
 import connectDB from './config/db.js';
 import userRoutes from './routes/userRoutes.js';
 import rideRoutes from './routes/rideRoutes.js';
+import tripRoutes from './routes/tripRoutes.js';
 import errorMiddleware from './middlewares/errorMiddleware.js';
 import dotenv from 'dotenv';
 
@@ -23,6 +24,8 @@ connectDB();
 // Routes
 app.use('/api', userRoutes);
 app.use('/api', rideRoutes);
+app.use('/api', tripRoutes);
+
 //server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

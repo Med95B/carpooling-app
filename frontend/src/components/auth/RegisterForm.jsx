@@ -32,7 +32,7 @@ const RegisterForm = () => {
     try {
       const res = await dispatch(registerUser(dataToSend));
       if (res.payload) {
-        navigate('/role'); 
+        navigate('/ride'); 
       }
     } catch (error) {
       console.error(error);

@@ -3,11 +3,11 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
 // Fonction pour générer un token JWT
-const generateToken = (userId, email, phone) => {
+const generateToken = (userId, email, phone,isDriver) => {
   return jwt.sign(
-    { userId, email, phone },
+    { userId, email, phone,isDriver },
     process.env.JWT_SECRET,
-    { expiresIn: '1h' }
+    {expiresIn:'30d'}
   );
 };
 
@@ -30,7 +30,7 @@ export const register = async (req, res) => {
     await newUser.save();
     
     // Générer le token JWT
-    const token = generateToken(newUser._id, newUser.email, newUser.phone);
+    const token = generateToken(newUser._id, newUser.email, newUser.phone,newUser.isDriver);
     
     res.status(201).json({ message: 'User created successfully', user: newUser, token });
   } catch (error) {
@@ -56,7 +56,7 @@ export const login = async (req, res) => {
     }
 
     // Générer le token JWT
-    const token = generateToken(user._id, user.email, user.phone);
+    const token = generateToken(user._id, user.email, user.phone,user.isDriver);
 
     res.status(200).json({ message: 'Login successful', user:user, token:token });
   } catch (error) {
@@ -66,7 +66,7 @@ export const login = async (req, res) => {
 
 // Mettre à jour le rôle de l'utilisateur (isDriver)
 export const updateUserRole = async (req, res) => {
-  const { userId } = req.params;
+  const userId = req.user._id;
   const { isDriver } = req.body;
 
   try {
@@ -79,8 +79,9 @@ export const updateUserRole = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-
-    res.status(200).json({user:user});
+// Générer le token JWT
+const token = generateToken(user._id, user.email, user.phone,user.isDriver);
+    res.status(200).json({user:user,token:token});
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

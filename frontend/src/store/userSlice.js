@@ -31,9 +31,9 @@ export const loginUser = createAsyncThunk('user/login', async (userData, { rejec
 
 // Action asynchrone pour mettre à jour le rôle de l'utilisateur (isDriver)
 export const updateUserRole = createAsyncThunk('user/updateRole', async (data, { rejectWithValue }) => {
-  const { userId, isDriver } = data;
+  const {  isDriver } = data;
   try {
-    const response = await axiosInstance.put(`${baseURL}/${userId}/updateRole`, { isDriver });
+    const response = await axiosInstance.put(`${baseURL}/updateRole`, { isDriver });
     return response.data;
   } catch (error) {
     return rejectWithValue(error.response.data);

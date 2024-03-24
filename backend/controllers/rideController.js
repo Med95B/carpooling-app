@@ -2,8 +2,8 @@ import Ride from '../models/Ride.js';
 
 // Créer un nouveau trajet
 export const createRide = async (req, res) => {
-  const { user, departure, arrival } = req.body;
-  
+  const { departure, arrival } = req.body;
+  const user = req.user;
   try {
     const newRide = new Ride({
       user,
@@ -38,6 +38,18 @@ export const getRideById = async (req, res) => {
       return res.status(404).json({ message: 'Ride not found' });
     }
     res.status(200).json(ride);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Obtenir les trajets d'un utilisateur par son ID
+export const getUserRides = async (req, res) => {
+  const user = req.user;
+
+  try {
+    const userRides = await Ride.find({ user: user });
+    res.status(200).json(userRides);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

@@ -8,12 +8,12 @@ const router = express.Router();
 router.post('/register', register);
 // Route pour se connecter et obtenir un token JWT
 router.post('/login', login);
-// Mettre à jour le rôle de l'utilisateur
-router.put('/:userId/updateRole', updateUserRole);
+// Mettre a jour le role du user protege avec le middleware
+router.put('/updateRole', authMiddleware,updateUserRole);
 
-// Exemple de route protégée avec le middleware d'authentification
+// route protege avec le middleware
 router.get('/profile', authMiddleware, (req, res) => {
-  // req.user contient les informations de l'utilisateur authentifié
+ 
   res.status(200).json(req.user);
 });
 

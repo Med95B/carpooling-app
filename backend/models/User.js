@@ -26,23 +26,10 @@ const userSchema = new mongoose.Schema({
   isDriver: {
     type: Boolean,
     default: false
-  },
-  vehicleInfo: {
-    make: String,
-    model: String,
-    year: Number,
-    // Les images du conducteur et du véhicule
-    driverLicenseImage: String,
-    vehicleRegistrationImage: String,
-    vehicleInsuranceImage: String,
-    vehicleImage: String
   }
-
-}, 
-{
-  timestamps:true
-}
-);
+}, {
+  timestamps: true
+});
 
 const User = mongoose.model('User', userSchema);
 

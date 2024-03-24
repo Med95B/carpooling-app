@@ -5,24 +5,10 @@ import LoginForm from './components/auth/LoginForm.jsx';
 import Navbar from './components/layout/Navbar.jsx';
 import ProtectedRoute from './components/auth/ProtectedRoute.jsx';
 import UserRole from './components/user/userRole.jsx';
-import PassengerForm from './components/user/passengerForm.jsx';
-import {useDispatch } from 'react-redux'
-import { setUser } from './store/userSlice.js';
-import {jwtDecode } from 'jwt-decode'
-import { useEffect } from 'react';
+import RideForm from './components/ride/rideForm.jsx';
+import PassengerTripForm from './components/trip/passengerTripForm.jsx';
 
 const App = () => {
-
-  const dispatch=useDispatch()
-
-  //solution du user undefined l'hors du rerender
-  useEffect(()=>{
-    const token = localStorage.getItem('token');
-    if (token) {
-      const decodedToken = jwtDecode (token);
-      dispatch(setUser(decodedToken));
-    }
-  })
 
   return (
     <Router>
@@ -33,7 +19,8 @@ const App = () => {
         <Route path="/" element={<LoginForm />} />
         <Route path="/register" element={<RegisterForm />} />
         <Route path="/role" element={<ProtectedRoute><UserRole /></ProtectedRoute>} />
-        <Route path='/passenger' element={<ProtectedRoute><PassengerForm /></ProtectedRoute>}/>
+        <Route path='/ride' element={<ProtectedRoute><RideForm /></ProtectedRoute>}/>
+        <Route path='/trip/passenger' element={<ProtectedRoute><PassengerTripForm /></ProtectedRoute>}/>     
       </Routes>
     </div>
   </Router>

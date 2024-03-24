@@ -22,7 +22,7 @@ const LoginForm = () => {
     try {
       const res = await dispatch(loginUser(formData));
       if (res.payload) {
-        navigate('/role'); 
+        navigate('/ride'); 
       }
     } catch (error) {
       console.error(error);

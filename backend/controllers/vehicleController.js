@@ -1,0 +1,124 @@
+import Vehicle from '../models/Vehicle.js';
+
+// Créer un nouveau véhicule
+export const createVehicle = async (req, res) => {
+  const {
+    make,
+    model,
+    year,
+    driverLicenseImage,
+    vehicleRegistrationImage,
+    vehicleInsuranceImage,
+    vehicleImage
+  } = req.body;
+  const { userId } = req.user; // user id recupere via l'authMiddleware
+
+  try {
+    const newVehicle = new Vehicle({
+      make,
+      model,
+      year,
+      driverLicenseImage,
+      vehicleRegistrationImage,
+      vehicleInsuranceImage,
+      vehicleImage,
+      owner: userId
+    });
+
+    const savedVehicle = await newVehicle.save();
+    res.status(201).json(savedVehicle);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Obtenir tous les vehicules d'un user
+export const getUserVehicles = async (req, res) => {
+  const { userId } = req.user; // user id recupere via l'authMiddleware
+
+  try {
+    const vehicles = await Vehicle.find({ owner: userId });
+    res.status(200).json(vehicles);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Obtenir un vehicule par ID
+export const getVehicleById = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const vehicle = await Vehicle.findById(id);
+    if (!vehicle) {
+      return res.status(404).json({ message: 'Vehicle not found' });
+    }
+    res.status(200).json(vehicle);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Mettre a jour un vehicule par ID
+export const updateVehicleById = async (req, res) => {
+  const { id } = req.params;
+  const {
+    make,
+    model,
+    year,
+    driverLicenseImage,
+    vehicleRegistrationImage,
+    vehicleInsuranceImage,
+    vehicleImage
+  } = req.body;
+
+  try {
+    const vehicle = await Vehicle.findById(id);
+    if (!vehicle) {
+      return res.status(404).json({ message: 'Vehicle not found' });
+    }
+
+    // Verifier si le user est le owner du vehicule
+    if (String(vehicle.owner) !== String(req.user.userId)) {
+      return res.status(403).json({ message: 'Unauthorized' });
+    }
+
+    vehicle.make = make || vehicle.make;
+    vehicle.model = model || vehicle.model;
+    vehicle.year = year || vehicle.year;
+    vehicle.driverLicenseImage = driverLicenseImage || vehicle.driverLicenseImage;
+    vehicle.vehicleRegistrationImage = vehicleRegistrationImage || vehicle.vehicleRegistrationImage;
+    vehicle.vehicleInsuranceImage = vehicleInsuranceImage || vehicle.vehicleInsuranceImage;
+    vehicle.vehicleImage = vehicleImage || vehicle.vehicleImage;
+
+    const updatedVehicle = await vehicle.save();
+    res.status(200).json(updatedVehicle);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Supprimer un vehicule par ID
+export const deleteVehicleById = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const vehicle = await Vehicle.findById(id);
+    if (!vehicle) {
+      return res.status(404).json({ message: 'Vehicle not found' });
+    }
+
+    // Vérifier si le user est le owner du vehicule
+    if (String(vehicle.owner) !== String(req.user.userId)) {
+      return res.status(403).json({ message: 'Unauthorized' });
+    }
+
+    const deletedVehicle = await Vehicle.findByIdAndDelete(id);
+    if (!deletedVehicle) {
+      return res.status(404).json({ message: 'Vehicle not found' });
+    }
+    res.status(200).json({ message: 'Vehicle deleted' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

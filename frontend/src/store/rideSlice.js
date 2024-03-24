@@ -42,6 +42,15 @@ export const getRideById = createAsyncThunk(
     }
   }
 );
+// Action asynchrone pour obtenir les rides d'un utilisateur
+export const getUserRides = createAsyncThunk('rides/getUserRides', async (_, { rejectWithValue }) => {
+  try {
+    const response = await axiosInstance.get(`${baseURL}/user/rides`);
+    return response.data;
+  } catch (error) {
+    return rejectWithValue(error.response.data);
+  }
+});
 
 // Action asynchrone pour supprimer un trajet par ID
 export const deleteRideById = createAsyncThunk(
@@ -116,6 +125,18 @@ const rideSlice = createSlice({
       .addCase(deleteRideById.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload.message;
+      })
+      .addCase(getUserRides.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(getUserRides.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.rides = action.payload;
+        state.error = null;
+      })
+      .addCase(getUserRides.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload.message;
       });
   },
 });
@@ -123,6 +144,7 @@ const rideSlice = createSlice({
 
 export const { setRides } = rideSlice.actions;
 export const selectRides = (state) => state.ride.rides;
+export const selectTrip = (state) => state.ride.ride;
 export const selectRidesStatus = (state) => state.ride.status;
 export const selectRidesError = (state) => state.ride.error;
 
