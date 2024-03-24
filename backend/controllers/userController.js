@@ -22,8 +22,11 @@ export const register = async (req, res) => {
       return res.status(400).json({ message: 'Email or phone number already exists' });
     }
 
-    // Créer un nouvel utilisateur
-    const newUser = new User({ firstName, lastName, email, phone, password, isDriver, vehicleInfo });
+    // Hasher le mot de passe
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Créer un nouvel utilisateur avec le mot de passe hashé
+    const newUser = new User({ firstName, lastName, email, phone, password: hashedPassword, isDriver, vehicleInfo });
     await newUser.save();
     
     // Générer le token JWT
@@ -55,7 +58,7 @@ export const login = async (req, res) => {
     // Générer le token JWT
     const token = generateToken(user._id, user.email, user.phone);
 
-    res.status(200).json({ message: 'Login successful',user, token });
+    res.status(200).json({ message: 'Login successful', user:user, token:token });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -77,7 +80,7 @@ export const updateUserRole = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    res.status(200).json(user);
+    res.status(200).json({user:user});
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

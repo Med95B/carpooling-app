@@ -22,7 +22,7 @@ const LoginForm = () => {
     try {
       const res = await dispatch(loginUser(formData));
       if (res.payload) {
-        navigate('/userRole'); 
+        navigate('/role'); 
       }
     } catch (error) {
       console.error(error);

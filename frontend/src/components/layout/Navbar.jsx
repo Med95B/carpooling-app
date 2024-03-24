@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { logoutUser, selectUser } from '../../store/userSlice.js';
+import { setUser } from '../../store/userSlice.js';
 
 const Navbar = () => {
   const user = useSelector(selectUser);
@@ -11,6 +12,7 @@ const Navbar = () => {
     // Dispatch de l'action de déconnexion
     dispatch(logoutUser());
     localStorage.removeItem('token');
+    dispatch(setUser(null));
     // Redirection vers la page de connexion après déconnexion
     navigate('/');
   };
