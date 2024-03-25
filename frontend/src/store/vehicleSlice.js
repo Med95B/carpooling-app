@@ -1,14 +1,28 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../config/axiosWithAuth';
+import config from '../config/config';
 
-const baseURL = '/vehicles';
+const baseURL = config.baseURL;
 
-//  creer un vehicule
+//  obtenir tous les véhicules
+export const getAllVehicles = createAsyncThunk(
+  'vehicles/getAll',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get(`${baseURL}/vehicles`);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+//  créer un nouveau véhicule
 export const createVehicle = createAsyncThunk(
   'vehicles/create',
   async (vehicleData, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.post(baseURL, vehicleData);
+      const response = await axiosInstance.post(`${baseURL}/vehicles`, vehicleData);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -16,12 +30,12 @@ export const createVehicle = createAsyncThunk(
   }
 );
 
-// obtenir les vehicules d'un user
+// obtenir les véhicules d'un utilisateur
 export const getUserVehicles = createAsyncThunk(
   'vehicles/getUserVehicles',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(baseURL);
+      const response = await axiosInstance.get(`${baseURL}/user/vehicles`);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -29,12 +43,12 @@ export const getUserVehicles = createAsyncThunk(
   }
 );
 
-// update un vehicule
+// mettre à jour un véhicule
 export const updateVehicle = createAsyncThunk(
   'vehicles/update',
   async ({ id, vehicleData }, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.put(`${baseURL}/${id}`, vehicleData);
+      const response = await axiosInstance.put(`${baseURL}/vehicles/${id}`, vehicleData);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -42,12 +56,12 @@ export const updateVehicle = createAsyncThunk(
   }
 );
 
-//  supprimer un vehicule
+//  supprimer un véhicule
 export const deleteVehicle = createAsyncThunk(
   'vehicles/delete',
   async (id, { rejectWithValue }) => {
     try {
-      await axiosInstance.delete(`${baseURL}/${id}`);
+      await axiosInstance.delete(`${baseURL}/vehicles/${id}`);
       return id;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -62,14 +76,21 @@ const vehicleSlice = createSlice({
     status: 'idle',
     error: null,
   },
-  reducers: {
-    clearStatus: (state) => {
-      state.status = 'idle';
-      state.error = null;
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
+    .addCase(getAllVehicles.pending, (state) => {
+      state.status = 'loading';
+    })
+    .addCase(getAllVehicles.fulfilled, (state, action) => {
+      state.status = 'succeeded';
+      state.vehicles = action.payload;
+      state.error = null;
+    })
+    .addCase(getAllVehicles.rejected, (state, action) => {
+      state.status = 'failed';
+      state.error = action.payload.message;
+    })
       .addCase(createVehicle.pending, (state) => {
         state.status = 'loading';
       })

@@ -11,7 +11,7 @@ export const createVehicle = async (req, res) => {
     vehicleInsuranceImage,
     vehicleImage
   } = req.body;
-  const { userId } = req.user; // user id recupere via l'authMiddleware
+  const  userId  = req.user; // user id recupere via l'authMiddleware
 
   try {
     const newVehicle = new Vehicle({
@@ -34,10 +34,20 @@ export const createVehicle = async (req, res) => {
 
 // Obtenir tous les vehicules d'un user
 export const getUserVehicles = async (req, res) => {
-  const { userId } = req.user; // user id recupere via l'authMiddleware
+  const  userId  = req.user; // user id recupere via l'authMiddleware
 
   try {
     const vehicles = await Vehicle.find({ owner: userId });
+    res.status(200).json(vehicles);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Obtenir tous les véhicules de la base de données
+export const getAllVehicles = async (req, res) => {
+  try {
+    const vehicles = await Vehicle.find();
     res.status(200).json(vehicles);
   } catch (error) {
     res.status(500).json({ message: error.message });

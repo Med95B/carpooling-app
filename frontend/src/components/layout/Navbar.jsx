@@ -1,10 +1,10 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import { logoutUser, selectUser } from '../../store/userSlice.js';
+import {  useDispatch } from 'react-redux';
+import { logoutUser } from '../../store/userSlice.js';
 import { setUser } from '../../store/userSlice.js';
 
 const Navbar = () => {
-  const user = useSelector(selectUser);
+  const token=localStorage.getItem('token')
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -34,7 +34,7 @@ const Navbar = () => {
         </button>
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav ml-auto">
-            {!user && (
+            {!token && (
               <>
                 <li className="nav-item">
                   <Link className="nav-link" to="/register">Register</Link>
@@ -44,7 +44,7 @@ const Navbar = () => {
                 </li>
               </>
             )}
-            {user && (
+            {token && (
               <li className="nav-item">
                 <button className="btn btn-link nav-link" onClick={handleLogout}>Logout</button>
               </li>

@@ -28,6 +28,15 @@ const tripSchema = new mongoose.Schema({
       enum: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
     }]
   },
+  vehicle: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Vehicle'
+  },
+  status: {
+    type: String,
+    enum: [null,'ongoing', 'completed', 'canceled'],
+    default: null
+  }
   
 });
 

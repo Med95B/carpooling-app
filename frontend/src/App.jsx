@@ -7,6 +7,7 @@ import ProtectedRoute from './components/auth/ProtectedRoute.jsx';
 import UserRole from './components/user/userRole.jsx';
 import RideForm from './components/ride/rideForm.jsx';
 import PassengerTripForm from './components/trip/passengerTripForm.jsx';
+import DriverTripForm from './components/trip/driverTripForm.jsx';
 
 const App = () => {
 
@@ -21,6 +22,7 @@ const App = () => {
         <Route path="/role" element={<ProtectedRoute><UserRole /></ProtectedRoute>} />
         <Route path='/ride' element={<ProtectedRoute><RideForm /></ProtectedRoute>}/>
         <Route path='/trip/passenger' element={<ProtectedRoute><PassengerTripForm /></ProtectedRoute>}/>     
+        <Route path='/trip/driver' element={<ProtectedRoute><DriverTripForm /></ProtectedRoute>}/>           
       </Routes>
     </div>
   </Router>

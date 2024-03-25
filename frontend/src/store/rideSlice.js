@@ -144,7 +144,7 @@ const rideSlice = createSlice({
 
 export const { setRides } = rideSlice.actions;
 export const selectRides = (state) => state.ride.rides;
-export const selectTrip = (state) => state.ride.ride;
+export const selectRide = (state) => state.ride.ride;
 export const selectRidesStatus = (state) => state.ride.status;
 export const selectRidesError = (state) => state.ride.error;
 
