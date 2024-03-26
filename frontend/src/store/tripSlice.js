@@ -1,15 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../config/axiosWithAuth';
-import config from '../config/config';
 
-const baseURL = config.baseURL;
 
 // créer un nouveau trip
 export const createTrip = createAsyncThunk(
   'trips/create',
   async (tripData, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.post(`${baseURL}/trips`, tripData);
+      const response = await axiosInstance.post(`/trips`, tripData);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -22,7 +20,7 @@ export const getAllTrips = createAsyncThunk(
   'trips/getAll',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`${baseURL}/trips`);
+      const response = await axiosInstance.get(`/trips`);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -35,7 +33,7 @@ export const getTripById = createAsyncThunk(
   'trips/getById',
   async (tripId, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`${baseURL}/trips/${tripId}`);
+      const response = await axiosInstance.get(`/trips/${tripId}`);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -48,7 +46,7 @@ export const deleteTripById = createAsyncThunk(
   'trips/deleteById',
   async (tripId, { rejectWithValue }) => {
     try {
-      await axiosInstance.delete(`${baseURL}/trips/${tripId}`);
+      await axiosInstance.delete(`/trips/${tripId}`);
       return tripId;
     } catch (error) {
       return rejectWithValue(error.response.data);

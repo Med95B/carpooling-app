@@ -1,4 +1,5 @@
 import Vehicle from '../models/Vehicle.js';
+import sendNewVehicleEmail from '../services/vehicleEmailService.js';
 
 // Créer un nouveau véhicule
 export const createVehicle = async (req, res) => {
@@ -6,27 +7,85 @@ export const createVehicle = async (req, res) => {
     make,
     model,
     year,
+  } = req.body;
+
+  const { 
     driverLicenseImage,
     vehicleRegistrationImage,
     vehicleInsuranceImage,
     vehicleImage
-  } = req.body;
-  const  userId  = req.user; // user id recupere via l'authMiddleware
+  } = req.files;
 
+  const userId = req.user._id; // user id récupéré via l'authMiddleware
+  
   try {
     const newVehicle = new Vehicle({
       make,
       model,
       year,
-      driverLicenseImage,
-      vehicleRegistrationImage,
-      vehicleInsuranceImage,
-      vehicleImage,
+     driverLicenseImage: driverLicenseImage[0].path, // Récupérer le chemin du fichier
+      vehicleRegistrationImage: vehicleRegistrationImage[0].path,
+      vehicleInsuranceImage: vehicleInsuranceImage[0].path,
+      vehicleImage: vehicleImage[0].path,
       owner: userId
     });
 
     const savedVehicle = await newVehicle.save();
+
+    //envoyer email à ladmin
+    const userEmail=req.user.email
+    sendNewVehicleEmail(userEmail,{make,model,year,userId})
+
+
     res.status(201).json(savedVehicle);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Mettre a jour un vehicule par ID
+export const updateVehicleById = async (req, res) => {
+  const { id } = req.params;
+  const {
+    make,
+    model,
+    year,
+  } = req.body;
+
+  const { 
+    driverLicenseImage,
+    vehicleRegistrationImage,
+    vehicleInsuranceImage,
+    vehicleImage
+  } = req.files;
+
+  const userId = req.user._id; // user id récupéré via l'authMiddleware
+
+  try {
+    const vehicle = await Vehicle.findById(id);
+    if (!vehicle) {
+      return res.status(404).json({ message: 'Vehicle not found' });
+    }
+
+    // Verifier si le user est le owner du vehicule
+    if (String(vehicle.owner) !== String(req.user.userId)) {
+      return res.status(403).json({ message: 'Unauthorized' });
+    }
+
+    vehicle.make = make || vehicle.make;
+    vehicle.model = model || vehicle.model;
+    vehicle.year = year || vehicle.year;
+    vehicle.driverLicenseImage = driverLicenseImage[0].path || vehicle.driverLicenseImage;
+    vehicle.vehicleRegistrationImage = vehicleRegistrationImage[0].path || vehicle.vehicleRegistrationImage;
+    vehicle.vehicleInsuranceImage = vehicleInsuranceImage[0].path || vehicle.vehicleInsuranceImage;
+    vehicle.vehicleImage = vehicleImage[0].path || vehicle.vehicleImage;
+
+    //envoyer email à ladmin
+    const userEmail=req.user.email
+    sendNewVehicleEmail(userEmail,{make,model,year,userId})
+
+    const updatedVehicle = await vehicle.save();
+    res.status(200).json(updatedVehicle);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -64,45 +123,6 @@ export const getVehicleById = async (req, res) => {
       return res.status(404).json({ message: 'Vehicle not found' });
     }
     res.status(200).json(vehicle);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-// Mettre a jour un vehicule par ID
-export const updateVehicleById = async (req, res) => {
-  const { id } = req.params;
-  const {
-    make,
-    model,
-    year,
-    driverLicenseImage,
-    vehicleRegistrationImage,
-    vehicleInsuranceImage,
-    vehicleImage
-  } = req.body;
-
-  try {
-    const vehicle = await Vehicle.findById(id);
-    if (!vehicle) {
-      return res.status(404).json({ message: 'Vehicle not found' });
-    }
-
-    // Verifier si le user est le owner du vehicule
-    if (String(vehicle.owner) !== String(req.user.userId)) {
-      return res.status(403).json({ message: 'Unauthorized' });
-    }
-
-    vehicle.make = make || vehicle.make;
-    vehicle.model = model || vehicle.model;
-    vehicle.year = year || vehicle.year;
-    vehicle.driverLicenseImage = driverLicenseImage || vehicle.driverLicenseImage;
-    vehicle.vehicleRegistrationImage = vehicleRegistrationImage || vehicle.vehicleRegistrationImage;
-    vehicle.vehicleInsuranceImage = vehicleInsuranceImage || vehicle.vehicleInsuranceImage;
-    vehicle.vehicleImage = vehicleImage || vehicle.vehicleImage;
-
-    const updatedVehicle = await vehicle.save();
-    res.status(200).json(updatedVehicle);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

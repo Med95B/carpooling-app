@@ -1,14 +1,12 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
-import config from '../config/config';
 import axiosInstance from '../config/axiosWithAuth';
 
-const baseURL = config.baseURL;
+
 
 // Action asynchrone pour l'inscription d'un utilisateur
 export const registerUser = createAsyncThunk('user/register', async (userData, { rejectWithValue }) => {
   try {
-    const response = await axios.post(`${baseURL}/register`, userData);
+    const response = await axiosInstance.post(`/register`, userData);
     // Sauvegarder le token dans le localStorage
     localStorage.setItem('token', response.data.token);
     return response.data;
@@ -20,7 +18,7 @@ export const registerUser = createAsyncThunk('user/register', async (userData, {
 // Action asynchrone pour la connexion d'un utilisateur
 export const loginUser = createAsyncThunk('user/login', async (userData, { rejectWithValue }) => {
   try {
-    const response = await axios.post(`${baseURL}/login`, userData);
+    const response = await axiosInstance.post(`/login`, userData);
     // Sauvegarder le token dans le localStorage
     localStorage.setItem('token', response.data.token);
     return response.data;
@@ -33,7 +31,7 @@ export const loginUser = createAsyncThunk('user/login', async (userData, { rejec
 export const updateUserRole = createAsyncThunk('user/updateRole', async (data, { rejectWithValue }) => {
   const {  isDriver } = data;
   try {
-    const response = await axiosInstance.put(`${baseURL}/updateRole`, { isDriver });
+    const response = await axiosInstance.put(`/updateRole`, { isDriver });
     return response.data;
   } catch (error) {
     return rejectWithValue(error.response.data);

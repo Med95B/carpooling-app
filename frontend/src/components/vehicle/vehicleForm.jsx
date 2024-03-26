@@ -25,8 +25,16 @@ const VehicleForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch(createVehicle(formData))
-    console.log(formData);
+    const form = new FormData();
+    form.append('make', formData.make);
+    form.append('model', formData.model);
+    form.append('year', formData.year);
+    form.append('driverLicenseImage', formData.driverLicenseImage);
+    form.append('vehicleRegistrationImage', formData.vehicleRegistrationImage);
+    form.append('vehicleInsuranceImage', formData.vehicleInsuranceImage);
+    form.append('vehicleImage', formData.vehicleImage);
+    dispatch(createVehicle(form))
+    
   };
   
 
@@ -61,7 +69,7 @@ const VehicleForm = () => {
         <div className="mb-3">
           <label htmlFor="vehicleImage" className="form-label">Vehicle Image</label>
           <input type="file" className="form-control" id="vehicleImage" name="vehicleImage" onChange={handleChange} required />
-        </div>
+  </div>
         <button type="submit" className="btn btn-primary">Submit Vehicle Information</button>
       </form>
 

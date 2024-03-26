@@ -1,15 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../config/axiosWithAuth';
-import config from '../config/config';
 
-const baseURL = config.baseURL;
 
 // Action asynchrone pour créer un nouveau trajet
 export const createRide = createAsyncThunk(
   'rides/create',
   async (rideData, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.post(`${baseURL}/rides`, rideData);
+      const response = await axiosInstance.post(`/rides`, rideData);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -22,7 +20,7 @@ export const getAllRides = createAsyncThunk(
   'rides/getAll',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`${baseURL}/rides`);
+      const response = await axiosInstance.get(`/rides`);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -35,7 +33,7 @@ export const getRideById = createAsyncThunk(
   'rides/getById',
   async (rideId, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`${baseURL}/rides/${rideId}`);
+      const response = await axiosInstance.get(`/rides/${rideId}`);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -45,7 +43,7 @@ export const getRideById = createAsyncThunk(
 // Action asynchrone pour obtenir les rides d'un utilisateur
 export const getUserRides = createAsyncThunk('rides/getUserRides', async (_, { rejectWithValue }) => {
   try {
-    const response = await axiosInstance.get(`${baseURL}/user/rides`);
+    const response = await axiosInstance.get(`/user/rides`);
     return response.data;
   } catch (error) {
     return rejectWithValue(error.response.data);
@@ -57,7 +55,7 @@ export const deleteRideById = createAsyncThunk(
   'rides/deleteById',
   async (rideId, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.delete(`${baseURL}/rides/${rideId}`);
+      const response = await axiosInstance.delete(`/rides/${rideId}`);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);

@@ -8,11 +8,17 @@ import {
   getAllVehicles
 } from '../controllers/vehicleController.js';
 import authMiddleware from '../middlewares/authMiddleware.js';
+import upload from '../middlewares/uploadVehicleMiddleware.js';
 
 const router = express.Router();
 
 // Créer un nouveau véhicule
-router.post('/vehicles', authMiddleware, createVehicle);
+router.post('/vehicles', authMiddleware,upload.fields([
+  { name: 'driverLicenseImage', maxCount: 1 },
+  { name: 'vehicleRegistrationImage', maxCount: 1 },
+  { name: 'vehicleInsuranceImage', maxCount: 1 },
+  { name: 'vehicleImage', maxCount: 1 }
+]) ,createVehicle);
 
 // Obtenir tous les véhicules d'un user
 router.get('/user/vehicles', authMiddleware, getUserVehicles);
@@ -24,7 +30,12 @@ router.get('/vehicles', authMiddleware, getAllVehicles);
 router.get('/vehicles/:id', authMiddleware, getVehicleById);
 
 // Mettre à jour un véhicule par ID
-router.put('/:id', authMiddleware,updateVehicleById);
+router.put('/:id', authMiddleware,upload.fields([
+  { name: 'driverLicenseImage', maxCount: 1 },
+  { name: 'vehicleRegistrationImage', maxCount: 1 },
+  { name: 'vehicleInsuranceImage', maxCount: 1 },
+  { name: 'vehicleImage', maxCount: 1 }
+]),updateVehicleById);
 
 // Supprimer un véhicule par ID
 router.delete('/vehicles/:id', authMiddleware, deleteVehicleById);

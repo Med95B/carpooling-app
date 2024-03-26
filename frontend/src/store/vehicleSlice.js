@@ -1,15 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../config/axiosWithAuth';
-import config from '../config/config';
 
-const baseURL = config.baseURL;
 
 //  obtenir tous les véhicules
 export const getAllVehicles = createAsyncThunk(
   'vehicles/getAll',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`${baseURL}/vehicles`);
+      const response = await axiosInstance.get(`/vehicles`);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -21,8 +19,9 @@ export const getAllVehicles = createAsyncThunk(
 export const createVehicle = createAsyncThunk(
   'vehicles/create',
   async (vehicleData, { rejectWithValue }) => {
+    
     try {
-      const response = await axiosInstance.post(`${baseURL}/vehicles`, vehicleData);
+      const response = await axiosInstance.post(`/vehicles`, vehicleData);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -35,7 +34,7 @@ export const getUserVehicles = createAsyncThunk(
   'vehicles/getUserVehicles',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`${baseURL}/user/vehicles`);
+      const response = await axiosInstance.get(`/user/vehicles`);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -48,7 +47,7 @@ export const updateVehicle = createAsyncThunk(
   'vehicles/update',
   async ({ id, vehicleData }, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.put(`${baseURL}/vehicles/${id}`, vehicleData);
+      const response = await axiosInstance.put(`/vehicles/${id}`, vehicleData);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -61,7 +60,7 @@ export const deleteVehicle = createAsyncThunk(
   'vehicles/delete',
   async (id, { rejectWithValue }) => {
     try {
-      await axiosInstance.delete(`${baseURL}/vehicles/${id}`);
+      await axiosInstance.delete(`/vehicles/${id}`);
       return id;
     } catch (error) {
       return rejectWithValue(error.response.data);
