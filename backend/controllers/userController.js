@@ -56,7 +56,7 @@ export const login = async (req, res) => {
     }
 
     // Générer le token JWT
-    const token = generateToken(user._id, user.email, user.phone,user.isDriver);
+    const token = generateToken(user._id, user.email, user.phone,user.firstName,user.lastName,user.isDriver);
 
     res.status(200).json({ message: 'Login successful', user:user, token:token });
   } catch (error) {
