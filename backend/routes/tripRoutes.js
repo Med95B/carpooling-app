@@ -1,8 +1,8 @@
 import express from 'express';
-const router = express.Router();
 import { searchTripsByCriteria ,createTrip, getAllTrips, getTripById, deleteTripById } from '../controllers/tripController.js';
 import authMiddleware from '../middlewares/authMiddleware.js';
 
+const router = express.Router();
 // Middleware pour verifier l'authentification
 router.use(authMiddleware);
 

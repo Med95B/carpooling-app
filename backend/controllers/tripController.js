@@ -52,6 +52,8 @@ export const getAllTrips = async (req, res) => {
 // Rechercher les trips par critères
 export const searchTripsByCriteria = async (req, res) => {
   const { departure, destination, date } = req.body;
+  const user = req.user;
+
   try {
     const rides = await Ride.find({
       departure: departure,
@@ -59,14 +61,30 @@ export const searchTripsByCriteria = async (req, res) => {
     });
 
     const rideIds = rides.map(ride => ride._id);
-
-    const trips = await Trip.find({
-      'ride': { $in: rideIds },
-      $or: [
-        { 'singleTrip.date': date },
-        { 'dailyTrip.days': { $in: [new Date(date).toLocaleDateString('en-US', { weekday: 'long' })] } },
-      ]
-    }).populate('ride');
+    let trips
+    if (user.isDriver) {
+      trips = await Trip.find({
+        'ride': { $in: rideIds },
+        'driver': null,
+        $or: [
+          { 'singleTrip.date': date },
+          { 'dailyTrip.days': { $in: [new Date(date).toLocaleDateString('en-US', { weekday: 'long' })] } },
+        ]
+      }).populate('ride')
+        .populate('passengers', 'firstName lastName email phone gender');
+    }else{
+      trips = await Trip.find({
+        'ride': { $in: rideIds },
+        'driver': { $ne: null }, 
+        $or: [
+          { 'singleTrip.date': date },
+          { 'dailyTrip.days': { $in: [new Date(date).toLocaleDateString('en-US', { weekday: 'long' })] } },
+        ]
+      }).populate('ride')
+      .populate('driver', 'firstName lastName email phone gender') 
+      .populate('passengers', 'firstName lastName email phone gender');
+    }
+   
 
     res.status(200).json(trips);
   } catch (error) {
@@ -78,9 +96,13 @@ export const searchTripsByCriteria = async (req, res) => {
 // Obtenir un trip par ID
 export const getTripById = async (req, res) => {
   const { id } = req.params;
-
   try {
-    const trip = await Trip.findById(id);
+
+      const  trip = await Trip.findById(id)
+      .populate('ride')
+      .populate('driver', 'firstName lastName email phone gender')
+      .populate('passengers', 'firstName lastName email phone gender');
+
     if (!trip) {
       return res.status(404).json({ message: 'Trip not found' });
     }

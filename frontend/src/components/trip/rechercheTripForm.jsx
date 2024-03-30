@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { searchTripsByCriteria } from '../../store/tripSlice';
+import { useDispatch,useSelector } from 'react-redux';
+import { searchTripsByCriteria, selectTrips,selectTripsStatus  } from '../../store/tripSlice';
+import { Link } from 'react-router-dom';
 
 const RechercheTripForm = () => {
   const [formData, setFormData] = useState({
@@ -8,7 +9,8 @@ const RechercheTripForm = () => {
     destination: '',
     date: ''
   });
-
+const trips=useSelector(selectTrips)
+const tripsStatus = useSelector(selectTripsStatus);
   const dispatch = useDispatch();
 
   const handleChange = (e) => {
@@ -26,6 +28,11 @@ const RechercheTripForm = () => {
     }); 
   };
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toISOString().split('T')[0];
+  };
+  
   return (
     <div className="container mt-5">
       <h2>Rechercher un trip</h2>
@@ -68,6 +75,56 @@ const RechercheTripForm = () => {
         </div>
         <button type="submit" className="btn btn-primary">Rechercher</button>
       </form>
+      {tripsStatus === 'loading' && (
+        <div className="alert alert-info mt-3" role="alert">
+          Recherche en cours...
+        </div>
+      )}
+
+      {tripsStatus === 'succeeded' && trips.length > 0 && (
+        <div className='mt-3'>
+          <h3>Résultats de la recherche :</h3>
+          <table className="table">
+            <thead>
+              <tr>
+                <th>Départ</th>
+                <th>Arrivée</th>
+                <th>Date</th>
+                <th>Heure</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {trips.map((trip) => (
+                <tr key={trip._id}>
+                  <td>{trip.ride.departure}</td>
+                  <td>{trip.ride.arrival}</td>
+                  <td>{trip.singleTrip ? formatDate(trip.singleTrip.date) : trip.dailyTrip.days.join(', ')}</td>
+                  <td>{trip.singleTrip ? trip.singleTrip.time : `${trip.dailyTrip.startTime} - ${trip.dailyTrip.endTime}`}</td>
+                  <td>
+                    <Link to={`/trip/${trip._id}`} className="btn btn-primary">Voir détails</Link>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {tripsStatus === 'succeeded' && trips.length === 0 && (
+        <div className="alert alert-info alert-dismissible fade show mt-3" role="alert">
+          Aucun trip disponible, vous pouvez créer un trip.
+          <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      )}
+
+      {tripsStatus === 'failed' && (
+        <div className="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+          Erreur lors de la recherche des trips. Veuillez réessayer.
+          <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      )}
+      
     </div>
   );
 };

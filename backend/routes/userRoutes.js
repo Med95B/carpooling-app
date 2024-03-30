@@ -1,5 +1,5 @@
 import express from 'express';
-import { register, login ,updateUserRole } from '../controllers/userController.js';
+import { register, login ,updateUserRole,sendCarpoolInvitation } from '../controllers/userController.js';
 import authMiddleware from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
@@ -10,7 +10,8 @@ router.post('/register', register);
 router.post('/login', login);
 // Mettre a jour le role du user protege avec le middleware
 router.put('/updateRole', authMiddleware,updateUserRole);
-
+//inviter un user pour le covoiturage
+router.post('/invite', authMiddleware, sendCarpoolInvitation);
 // route protege avec le middleware
 router.get('/profile', authMiddleware, (req, res) => {
  

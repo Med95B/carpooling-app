@@ -5,6 +5,7 @@ import userRoutes from './routes/userRoutes.js';
 import rideRoutes from './routes/rideRoutes.js';
 import tripRoutes from './routes/tripRoutes.js';
 import vehicleRoutes from './routes/vehicleRoutes.js'
+import invitationRoutes from './routes/invitationRoutes.js'
 import errorMiddleware from './middlewares/errorMiddleware.js';
 import dotenv from 'dotenv';
 
@@ -28,7 +29,7 @@ app.use('/api', userRoutes);
 app.use('/api', rideRoutes);
 app.use('/api', tripRoutes);
 app.use('/api',vehicleRoutes)
-
+app.use('/api',invitationRoutes)
 //server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

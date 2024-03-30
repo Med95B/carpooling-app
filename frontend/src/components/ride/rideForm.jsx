@@ -18,7 +18,7 @@ const RideForm = () => {
 
   return (
     <div className="container mt-5">
-      <h2 className="mb-4">Passenger Form</h2>
+      <h2 className="mb-4">Ride Form</h2>
       <h3 className='text-center'>Ajouter un trajet</h3>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">

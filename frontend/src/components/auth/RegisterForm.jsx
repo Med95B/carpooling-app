@@ -12,6 +12,7 @@ const RegisterForm = () => {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
+    gender:'',
     email: '',
     phone: '',
     password: '',
@@ -54,6 +55,13 @@ const RegisterForm = () => {
         </div>
         <div className="mb-3">
           <input type="text" className="form-control" name="phone" placeholder="Phone" onChange={handleChange} />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="gender" className="form-label">Gender</label>
+          <select className="form-select" id="gender" name="gender" value={formData.gender} onChange={handleChange}>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+          </select>
         </div>
         <div className="mb-3">
           <input type="password" className="form-control" name="password" placeholder="Password" onChange={handleChange} />

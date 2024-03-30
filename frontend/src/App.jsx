@@ -9,11 +9,13 @@ import RideForm from './components/ride/rideForm.jsx';
 import PassengerTrip from './components/trip/passengerTrip.jsx';
 import DriverTrip from './components/trip/driverTrip.jsx';
 import NotFoundPage from './components/auth/NotFoundPage.jsx';
+import DetailsTrip from './components/trip/detailsTrip.jsx';
 import {useDispatch} from 'react-redux'
 import { decodeToken } from './utils/authToken.js';
 import { useEffect } from 'react';
 import { setUser } from './store/userSlice.js';
 import AuthRoute from './components/auth/AuthRoute.jsx';
+import UserInvitation from './components/invitation/userInvitations.jsx';
 
 const App = () => {
   const token = localStorage.getItem('token');
@@ -35,6 +37,8 @@ useEffect(()=>{
         <Route path='/ride' element={<GuestRoute><RideForm /></GuestRoute>}/>
         <Route path='/trip/passenger' element={<GuestRoute><PassengerTrip /></GuestRoute>}/>     
         <Route path='/trip/driver' element={<GuestRoute><DriverTrip /></GuestRoute>}/>           
+        <Route path='/trip/:id' element={<GuestRoute><DetailsTrip /></GuestRoute>}/>                   
+        <Route path='/invitations' element={<GuestRoute>< UserInvitation/></GuestRoute>}/>                          
         <Route path='*' element={<NotFoundPage />}/>                 
       </Routes>
     </div>

@@ -14,7 +14,7 @@ const generateToken = (userId,firstName,lastName, email, phone,isDriver) => {
 // Contrôleur pour enregistrer un nouvel utilisateur
 export const register = async (req, res) => {
   try {
-    const { firstName, lastName, email, phone, password, isDriver, vehicleInfo } = req.body;
+    const { firstName, lastName,gender ,email, phone, password, isDriver, vehicleInfo } = req.body;
 
     // Vérifier si l'email ou le telephone existe deja
     const existingUser = await User.findOne({ $or: [{ email }, { phone }] });
@@ -26,11 +26,11 @@ export const register = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Créer un nouvel utilisateur avec le mot de passe hashé
-    const newUser = new User({ firstName, lastName, email, phone, password: hashedPassword, isDriver, vehicleInfo });
+    const newUser = new User({ firstName, lastName,gender ,email, phone, password: hashedPassword, isDriver, vehicleInfo });
     await newUser.save();
     
     // Générer le token JWT
-    const token = generateToken(newUser._id,newUser.firstName,newUser.lastName ,newUser.email, newUser.phone,newUser.isDriver);
+    const token = generateToken(newUser._id,newUser.firstName,newUser.gender,newUser.lastName ,newUser.email, newUser.phone,newUser.isDriver);
     
     res.status(201).json({ message: 'User created successfully', user: newUser, token });
   } catch (error) {
@@ -56,7 +56,7 @@ export const login = async (req, res) => {
     }
 
     // Générer le token JWT
-    const token = generateToken(user._id,user.firstName,user.lastName, user.email, user.phone,user.isDriver);
+    const token = generateToken(user._id,user.firstName,user.lastName,user.gender ,user.email, user.phone,user.isDriver);
 
     res.status(200).json({ message: 'Login successful', user:user, token:token });
   } catch (error) {
