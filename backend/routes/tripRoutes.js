@@ -1,10 +1,13 @@
 import express from 'express';
 const router = express.Router();
-import { createTrip, getAllTrips, getTripById, deleteTripById } from '../controllers/tripController.js';
+import { searchTripsByCriteria ,createTrip, getAllTrips, getTripById, deleteTripById } from '../controllers/tripController.js';
 import authMiddleware from '../middlewares/authMiddleware.js';
 
 // Middleware pour verifier l'authentification
 router.use(authMiddleware);
+
+// recherche de trips par critères
+router.post('/trips/search', searchTripsByCriteria);
 
 //  creer un nouveau trip
 router.post('/trips', createTrip);

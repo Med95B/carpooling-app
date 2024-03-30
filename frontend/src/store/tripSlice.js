@@ -41,6 +41,19 @@ export const getTripById = createAsyncThunk(
   }
 );
 
+// rechercher les trips par critères
+export const searchTripsByCriteria = createAsyncThunk(
+  'trips/searchByCriteria',
+  async (searchCriteria, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post(`/trips/search`, searchCriteria);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 // supprimer un trip par ID
 export const deleteTripById = createAsyncThunk(
   'trips/deleteById',
@@ -98,6 +111,18 @@ const tripSlice = createSlice({
         state.error = null;
       })
       .addCase(getTripById.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload.message;
+      })
+      .addCase(searchTripsByCriteria.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(searchTripsByCriteria.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.trips = action.payload;
+        state.error = null;
+      })
+      .addCase(searchTripsByCriteria.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload.message;
       })

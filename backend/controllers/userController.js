@@ -3,9 +3,9 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
 // Fonction pour générer un token JWT
-const generateToken = (userId, email, phone,isDriver) => {
+const generateToken = (userId,firstName,lastName, email, phone,isDriver) => {
   return jwt.sign(
-    { userId, email, phone,isDriver },
+    { userId,firstName,lastName, email, phone,isDriver },
     process.env.JWT_SECRET,
     {expiresIn:'30d'}
   );
@@ -16,7 +16,7 @@ export const register = async (req, res) => {
   try {
     const { firstName, lastName, email, phone, password, isDriver, vehicleInfo } = req.body;
 
-    // Vérifier si l'email ou le téléphone existe déjà
+    // Vérifier si l'email ou le telephone existe deja
     const existingUser = await User.findOne({ $or: [{ email }, { phone }] });
     if (existingUser) {
       return res.status(400).json({ message: 'Email or phone number already exists' });
@@ -30,7 +30,7 @@ export const register = async (req, res) => {
     await newUser.save();
     
     // Générer le token JWT
-    const token = generateToken(newUser._id, newUser.email, newUser.phone,newUser.isDriver);
+    const token = generateToken(newUser._id,newUser.firstName,newUser.lastName ,newUser.email, newUser.phone,newUser.isDriver);
     
     res.status(201).json({ message: 'User created successfully', user: newUser, token });
   } catch (error) {
@@ -56,7 +56,7 @@ export const login = async (req, res) => {
     }
 
     // Générer le token JWT
-    const token = generateToken(user._id, user.email, user.phone,user.firstName,user.lastName,user.isDriver);
+    const token = generateToken(user._id,user.firstName,user.lastName, user.email, user.phone,user.isDriver);
 
     res.status(200).json({ message: 'Login successful', user:user, token:token });
   } catch (error) {
