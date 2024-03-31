@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { useDispatch,useSelector } from 'react-redux';
-import { searchTripsByCriteria, selectTrips,selectTripsStatus,selectTripsError  } from '../../store/tripSlice';
+import  { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { searchTripsByCriteria, selectTrips, selectTripsStatus, selectTripsError } from '../../store/tripSlice';
 import { Link } from 'react-router-dom';
 
 const RechercheTripForm = () => {
@@ -9,11 +9,10 @@ const RechercheTripForm = () => {
     destination: '',
     date: ''
   });
-const trips=useSelector(selectTrips)
-const tripsStatus = useSelector(selectTripsStatus);
-const tripsError=useSelector(selectTripsError)
 
-
+  const trips = useSelector(selectTrips);
+  const tripsStatus = useSelector(selectTripsStatus);
+  const tripsError = useSelector(selectTripsError);
 
   const dispatch = useDispatch();
 
@@ -29,14 +28,14 @@ const tripsError=useSelector(selectTripsError)
       departure: '',
       destination: '',
       date: ''
-    }); 
+    });
   };
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toISOString().split('T')[0];
   };
-  
+
   return (
     <div className="container mt-5">
       <h2>Rechercher un trip</h2>
@@ -88,30 +87,20 @@ const tripsError=useSelector(selectTripsError)
       {tripsStatus === 'succeeded' && trips.length > 0 && (
         <div className='mt-3'>
           <h3>Résultats de la recherche :</h3>
-          <table className="table">
-            <thead>
-              <tr>
-                <th>Départ</th>
-                <th>Arrivée</th>
-                <th>Date</th>
-                <th>Heure</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {trips.map((trip) => (
-                <tr key={trip._id}>
-                  <td>{trip.ride.departure}</td>
-                  <td>{trip.ride.arrival}</td>
-                  <td>{trip.singleTrip ? formatDate(trip.singleTrip.date) : trip.dailyTrip.days.join(', ')}</td>
-                  <td>{trip.singleTrip ? trip.singleTrip.time : `${trip.dailyTrip.startTime} - ${trip.dailyTrip.endTime}`}</td>
-                  <td>
+          <div className="row row-cols-1 row-cols-md-2 g-4">
+            {trips.map((trip) => (
+              <div className="col" key={trip._id}>
+                <div className="card h-100">
+                  <div className="card-body">
+                    <h5 className="card-title">{trip.ride.departure} - {trip.ride.arrival}</h5>
+                    <p className="card-text">Date: {trip.singleTrip ? formatDate(trip.singleTrip.date) : trip.dailyTrip.days.join(', ')}</p>
+                    <p className="card-text">Heure: {trip.singleTrip ? trip.singleTrip.time : `${trip.dailyTrip.startTime} - ${trip.dailyTrip.endTime}`}</p>
                     <Link to={`/trip/${trip._id}`} className="btn btn-primary">Voir détails</Link>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
@@ -124,14 +113,13 @@ const tripsError=useSelector(selectTripsError)
 
       {tripsStatus === 'failed' && (
         <div className="alert alert-danger alert-dismissible fade show mt-3" role="alert">
-            {tripsError}
+          {tripsError}
           <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
       )}
- 
-      
     </div>
   );
 };
 
 export default RechercheTripForm;
+
