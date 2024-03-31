@@ -13,7 +13,12 @@ export const getInvitations = async (req, res) => {
         ]
       }).populate('sender')
         .populate('recipient')
-        .populate('trip');
+        .populate({
+          path: 'trip',
+          populate: {
+            path: 'ride'
+          }
+        }).sort({ createdAt: -1 });
   
       res.status(200).json(invitations);
     } catch (error) {
@@ -36,7 +41,7 @@ export const sendInvitation = async (req, res) => {
     const invitation = new Invitation({
       sender: senderId,
       recipient: recipientId,
-      tripId: tripId,
+      trip: tripId,
     });
     await invitation.save();
 
@@ -95,6 +100,30 @@ export const declineInvitation = async (req, res) => {
     await invitation.save();
 
     res.status(200).json({ message: 'Invitation declined successfully', invitation });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Annuler une invitation
+export const cancelInvitation = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const invitation = await Invitation.findById(id);
+    if (!invitation) {
+      return res.status(404).json({ message: 'Invitation not found' });
+    }
+
+    // Vérifier si le user est autorisé à annuler l'invitation
+    if (invitation.sender.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: 'You are not authorized to cancel this invitation' });
+    }
+
+    // Supprimer l'invitation de la base de données
+    await Invitation.findByIdAndDelete(id);
+
+    res.status(200).json({ message: 'Invitation canceled successfully',id:id });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

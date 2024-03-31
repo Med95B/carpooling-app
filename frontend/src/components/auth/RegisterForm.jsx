@@ -12,7 +12,7 @@ const RegisterForm = () => {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
-    gender:'',
+    gender:'male',
     email: '',
     phone: '',
     password: '',

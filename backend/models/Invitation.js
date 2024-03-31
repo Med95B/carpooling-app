@@ -11,7 +11,7 @@ const invitationSchema = new mongoose.Schema({
     ref: 'User',
     required: true,
   },
-  tripId: {
+  trip: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Trip',
     required: true,

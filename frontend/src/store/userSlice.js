@@ -38,18 +38,6 @@ export const updateUserRole = createAsyncThunk('user/updateRole', async (data, {
   }
 });
 
-// Action asynchrone pour inviter un user au covoiturage
-export const sendCarpoolInvitation = createAsyncThunk(
-  'user/sendCarpoolInvitation',
-  async ({ recipientId }, { rejectWithValue }) => {
-    try {
-      const response = await axiosInstance.post(`/invite`, { recipientId });
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.response.data);
-    }
-  }
-);
 
 // Action pour la déconnexion d'un utilisateur
 export const logoutUser = () => (dispatch) => {
@@ -108,17 +96,6 @@ const userSlice = createSlice({
         state.status = 'failed';
         state.error = action.payload.message;
       })
-      .addCase(sendCarpoolInvitation.pending, (state) => {
-        state.status = 'loading';
-      })
-      .addCase(sendCarpoolInvitation.fulfilled, (state) => {
-        state.status = 'succeeded';
-        
-      })
-      .addCase(sendCarpoolInvitation.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.payload.message;
-      });
   },
 });
 

@@ -8,7 +8,7 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector(selectUser);
-console.log(user);
+
   const handleLogout = () => {
     dispatch(logoutUser());
     localStorage.removeItem('token');

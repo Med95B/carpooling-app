@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useDispatch,useSelector } from 'react-redux';
-import { searchTripsByCriteria, selectTrips,selectTripsStatus  } from '../../store/tripSlice';
+import { searchTripsByCriteria, selectTrips,selectTripsStatus,selectTripsError  } from '../../store/tripSlice';
 import { Link } from 'react-router-dom';
 
 const RechercheTripForm = () => {
@@ -11,6 +11,10 @@ const RechercheTripForm = () => {
   });
 const trips=useSelector(selectTrips)
 const tripsStatus = useSelector(selectTripsStatus);
+const tripsError=useSelector(selectTripsError)
+
+
+
   const dispatch = useDispatch();
 
   const handleChange = (e) => {
@@ -120,10 +124,11 @@ const tripsStatus = useSelector(selectTripsStatus);
 
       {tripsStatus === 'failed' && (
         <div className="alert alert-danger alert-dismissible fade show mt-3" role="alert">
-          Erreur lors de la recherche des trips. Veuillez réessayer.
+            {tripsError}
           <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
       )}
+ 
       
     </div>
   );

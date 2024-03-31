@@ -11,7 +11,7 @@ import DriverTrip from './components/trip/driverTrip.jsx';
 import NotFoundPage from './components/auth/NotFoundPage.jsx';
 import DetailsTrip from './components/trip/detailsTrip.jsx';
 import {useDispatch} from 'react-redux'
-import { decodeToken } from './utils/authToken.js';
+import { jwtDecode } from "jwt-decode";
 import { useEffect } from 'react';
 import { setUser } from './store/userSlice.js';
 import AuthRoute from './components/auth/AuthRoute.jsx';
@@ -20,9 +20,18 @@ import UserInvitation from './components/invitation/userInvitations.jsx';
 const App = () => {
   const token = localStorage.getItem('token');
   const dispatch = useDispatch();
+
+ const decodeToken = (token) => {
+    try {
+      const decoded = jwtDecode(token);
+      return decoded;
+    } catch (error) {
+      return null;
+    }
+  };
+
 useEffect(()=>{
   dispatch(setUser(decodeToken(token)))
-  console.log(decodeToken(token));
 },[dispatch,token])
 
   return (

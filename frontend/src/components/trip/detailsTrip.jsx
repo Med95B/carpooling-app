@@ -1,16 +1,18 @@
 
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { selectTrips, selectTripsStatus, selectTripsError } from '../../store/tripSlice';
+import { selectTrips } from '../../store/tripSlice';
+import { selectInvitationsError,selectInvitationsStatus ,selectInvitationsMessage} from '../../store/invitationSlice';
 import UserCard from '../user/userCard';
 
 const DetailsTrip = () => {
   const { id } = useParams();
   const trips = useSelector(selectTrips);
   const trip = trips.find(trip => trip._id === id);
-  console.log(trip);
-  const tripStatus = useSelector(selectTripsStatus);
-  const tripError = useSelector(selectTripsError);
+  const invitationStatus=useSelector(selectInvitationsStatus)
+const invitationError=useSelector(selectInvitationsError)
+const invitationMessage=useSelector(selectInvitationsMessage)
+
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -21,11 +23,6 @@ const DetailsTrip = () => {
   return (
     <div className="container mt-5">
       <h2>Trip Details</h2>
-      {tripStatus === 'loading' && (
-        <div className="alert alert-info mt-3" role="alert">
-          Loading...
-        </div>
-      )}
       <div>
         {trip?.ride&&<div>
             <p><strong>Departure:</strong> {trip.ride.departure}</p>
@@ -61,9 +58,16 @@ const DetailsTrip = () => {
           </div>
         )}
       </div>
-      {tripStatus === 'failed' && (
+      {invitationStatus === 'succeeded' && (
+        <div className="alert alert-success alert-dismissible fade show mt-3" role="alert">
+          {invitationMessage}
+          <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      )}
+
+      {invitationStatus === 'failed' && (
         <div className="alert alert-danger alert-dismissible fade show mt-3" role="alert">
-          {tripError}
+            {invitationError}
           <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
       )}
