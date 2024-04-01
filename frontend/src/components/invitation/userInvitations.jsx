@@ -64,12 +64,12 @@ useEffect(() => {
                     </ul>
                   </div>
                 )}
-                    {invitation.sender && (currentUser.userId||currentUser._id) === invitation.sender._id &&invitation.status === 'pending' && (
+                    {invitation.sender && currentUser._id === invitation.sender._id &&invitation.status === 'pending' && (
                   <button className="btn btn-danger mt-2" onClick={() => handleCancel(invitation._id)}>
                     Cancel Invitation
                   </button>
                 )}
-                   {invitation.recipient && (currentUser.userId||currentUser._id) === invitation.recipient._id && invitation.status === 'pending' && (
+                   {invitation.recipient && currentUser._id === invitation.recipient._id && invitation.status === 'pending' && (
                 <div className='mt-2'>
                   <button className="btn btn-success me-2" onClick={() => handleAcceptInvitation(invitation._id)}>Accept</button>
                   <button className="btn btn-danger" onClick={() => handleDeclineInvitation(invitation._id)}>Decline</button>

@@ -32,6 +32,8 @@ export const updateUserRole = createAsyncThunk('user/updateRole', async (data, {
   const {  isDriver } = data;
   try {
     const response = await axiosInstance.put(`/updateRole`, { isDriver });
+     // Sauvegarder le token dans le localStorage
+     localStorage.setItem('token', response.data.token);
     return response.data;
   } catch (error) {
     return rejectWithValue(error.response.data);
@@ -44,6 +46,8 @@ export const updateUserProfile = createAsyncThunk(
   async (userData, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.put(`/updateProfile`, userData);
+      // Sauvegarder le token dans le localStorage
+    localStorage.setItem('token', response.data.token);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -74,8 +78,9 @@ export const logoutUser = () => (dispatch) => {
 const userSlice = createSlice({
   name: 'user',
   initialState: {
-    user: null,
+    user: {},
     status: 'idle',
+    message:'',
     error: null,
   },
   reducers: {
@@ -127,6 +132,7 @@ const userSlice = createSlice({
       .addCase(updateUserProfile.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.user = action.payload.user;
+        state.message=action.payload.message
         state.error = null;
       })
       .addCase(updateUserProfile.rejected, (state, action) => {
@@ -150,6 +156,6 @@ export const { setUser } = userSlice.actions;
 export const selectUser = (state) => state.user.user;
 export const selectStatus = (state) => state.user.status;
 export const selectError = (state) => state.user.error;
-
+export const selectMessage=(state) => state.user.message
 export default userSlice.reducer;
 

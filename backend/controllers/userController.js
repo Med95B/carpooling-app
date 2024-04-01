@@ -3,9 +3,9 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
 // Fonction pour générer un token JWT
-const generateToken = (_id,firstName,lastName, email, phone,isDriver,photo,idCard) => {
+const generateToken = (_id,firstName,lastName,gender ,email, phone,isDriver,photo,idCard) => {
   return jwt.sign(
-    { _id,firstName,lastName, email, phone,isDriver,photo,idCard },
+    { _id,firstName,lastName, gender,email, phone,isDriver,photo,idCard },
     process.env.JWT_SECRET,
     {expiresIn:'30d'}
   );
@@ -80,7 +80,7 @@ export const updateUserRole = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 // Générer le token JWT
-const token = generateToken(user._id, user.email, user.phone,user.isDriver);
+const token = generateToken(user._id,user.firstName,user.lastName,user.gender ,user.email, user.phone,user.isDriver,user.photo,user.idCard);
     res.status(200).json({user:user,token:token});
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -92,7 +92,7 @@ const token = generateToken(user._id, user.email, user.phone,user.isDriver);
 export const updateProfile = async (req, res) => {
   const userId = req.user._id;
   const { firstName, lastName, email, phone } = req.body;
-  const { photo,idCard } = req.files;
+  const { photo,idCardR,idCardV } = req.files;
   
   try {
     const user = await User.findById(userId);
@@ -105,11 +105,20 @@ export const updateProfile = async (req, res) => {
     user.lastName = lastName 
     user.email = email 
     user.phone = phone
-    user.photo = photo[0].path 
-    user.idCard = idCard[0].path 
-    const updatedProfile = await user.save();
 
-    res.status(200).json({ message: 'Profile updated successfully', updatedProfile });
+    if (photo && photo.length > 0) {
+      user.photo = photo[0].filename;
+    }
+    if (idCardR && idCardR.length > 0) {
+      user.idCardR = idCardR[0].filename;
+    }
+    if (idCardV && idCardV.length > 0) {
+      user.idCardV = idCardV[0].filename;
+    }
+    const updatedProfile = await user.save();
+// Générer le token JWT
+const token = generateToken(updatedProfile._id,updatedProfile.firstName,updatedProfile.lastName,updatedProfile.gender ,updatedProfile.email, updatedProfile.phone,updatedProfile.isDriver,updatedProfile.photo,updatedProfile.idCard);
+    res.status(200).json({ message: 'Profile updated successfully',user:updatedProfile,token:token });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

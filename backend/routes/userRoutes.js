@@ -14,9 +14,8 @@ router.put('/updateRole', authMiddleware,updateUserRole);
 // update profile
 router.put('/updateProfile',authMiddleware,uploadProfile.fields([
   { name: 'photo', maxCount: 1 },
-  { name: 'idCard', maxCount: 1 },
-])
-,updateProfile)
+  { name: 'idCard', maxCount: 1 }
+]),updateProfile)
 // route protege avec le middleware
 router.get('/profile', authMiddleware, (req, res) => {
  

@@ -1,10 +1,14 @@
 import  { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { updateUserProfile, deleteUser,selectUser,selectError } from '../../store/userSlice.js';
+import { updateUserProfile, deleteUser,selectUser,selectError,selectMessage } from '../../store/userSlice.js';
+import config from '../../config/config.js';
 
 const Profile = () => {
+
   const user = useSelector(selectUser);
+  console.log(user);
   const error=useSelector(selectError)
+  const message=useSelector(selectMessage)
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     firstName: user.firstName,
@@ -12,11 +16,17 @@ const Profile = () => {
     email: user.email,
     phone: user.phone,
     photo: user.photo ||'',
-    idCard:user.idCard||''
+    idCardR:user.idCardR||'',
+    idCardV:user.idCardV||''
   });
-console.log(formData);
 
-  const dispatch = useDispatch();
+  const [fileReader,setFileReader]=useState({
+  photo: user.photo ||'',
+    idCardR:user.idCardR||'',
+    idCardV:user.idCardV||''
+})
+
+const dispatch = useDispatch();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -25,16 +35,16 @@ console.log(formData);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    const reader = new FileReader();
-
-    reader.onloadend = () => {
-      setFormData({ ...formData, [e.target.name]: reader.result });
-    };
-
     if (file) {
+      setFormData({ ...formData, [e.target.name]: file })
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFileReader({ ...fileReader, [e.target.name]: reader.result });
+      };
       reader.readAsDataURL(file);
     }
   };
+
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -48,13 +58,23 @@ console.log(formData);
       email: user.email,
       phone: user.phone,
       photo: user.photo,
-      idCard:user.idCard
+      idCardR:user.idCardR,
+      idCardV:user.idCardV
+
     });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(updateUserProfile(formData));
+    const form=new FormData()
+    form.append('firstName',formData.firstName)
+    form.append('lastName',formData.lastName)
+    form.append('email',formData.email)
+    form.append('phone',formData.phone)
+    form.append('photo',formData.photo)
+    form.append('idCardR',formData.idCardR)
+    form.append('idCardV',formData.idCardV)
+    dispatch(updateUserProfile(form));
     setIsEditing(false);
   };
 
@@ -68,6 +88,9 @@ console.log(formData);
     <div className="container mt-5">
       <h2>Profile</h2>
       <div className="card">
+      <img src={config.baseURL+user.photo} className="card-img-top mx-auto mt-3" alt="profile"
+      style={{width:'200px',height:'200px',objectFit:'cover',borderRadius:'50%'}}
+      />
         <div className="card-body">
           <form onSubmit={handleSubmit} encType="multipart/form-data">
             <div className="mb-3">
@@ -133,9 +156,9 @@ console.log(formData);
                 onChange={handleFileChange}
                 disabled={!isEditing}
               />
-              {formData.photo && (
+              {fileReader.photo && (
                 <img
-                  src={formData.photo}
+                  src={fileReader.photo}
                   alt="Profile"
                   className="img-thumbnail mt-2"
                   style={{ maxWidth: '200px' }}
@@ -143,20 +166,40 @@ console.log(formData);
               )}
             </div>
             <div className="mb-3">
-              <label htmlFor="idCard" className="form-label">ID Card</label>
+              <label htmlFor="idCardR" className="form-label">ID Card Recto</label>
               <input
                 type="file"
                 className="form-control"
-                id="idCard"
-                name="idCard"
+                id="idCardR"
+                name="idCardR"
                 accept="image/*"
                 onChange={handleFileChange}
                 disabled={!isEditing}
               />
-              {formData.idCard && (
+              {fileReader.idCardR && (
                 <img
-                  src={formData.idCard}
-                  alt="ID Card"
+                  src={fileReader.idCardR}
+                  alt="ID CardR"
+                  className="img-thumbnail mt-2"
+                  style={{ maxWidth: '200px' }}
+                />
+              )}
+            </div>
+            <div className="mb-3">
+              <label htmlFor="idCardV" className="form-label">ID Card Verso</label>
+              <input
+                type="file"
+                className="form-control"
+                id="idCardV"
+                name="idCardV"
+                accept="image/*"
+                onChange={handleFileChange}
+                disabled={!isEditing}
+              />
+              {fileReader.idCardV && (
+                <img
+                  src={fileReader.idCardV}
+                  alt="ID CardV"
                   className="img-thumbnail mt-2"
                   style={{ maxWidth: '200px' }}
                 />
@@ -178,6 +221,12 @@ console.log(formData);
       </div>
       {error&& <div className="alert alert-danger alert-dismissible fade show mt-3" role="alert">
             {error}
+          <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+      }
+       {message&& <div className="alert alert-success alert-dismissible fade show mt-3" role="alert">
+            {message}
           <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
 

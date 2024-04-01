@@ -28,7 +28,11 @@ const userSchema = new mongoose.Schema({
     type: String,
     default:''
   },
-  idCard: {
+  idCardR: {
+    type: String,
+    default:''
+  },
+  idCardV: {
     type: String,
     default:''
   },
