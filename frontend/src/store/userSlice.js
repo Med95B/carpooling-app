@@ -121,6 +121,9 @@ const userSlice = createSlice({
         state.status = 'failed';
         state.error = action.payload.message;
       })
+      .addCase(updateUserProfile.pending, (state) => {
+        state.status = 'loading';
+      })
       .addCase(updateUserProfile.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.user = action.payload.user;
@@ -142,7 +145,7 @@ const userSlice = createSlice({
   },
 });
 
-// Exportez les actions et le reducer
+
 export const { setUser } = userSlice.actions;
 export const selectUser = (state) => state.user.user;
 export const selectStatus = (state) => state.user.status;

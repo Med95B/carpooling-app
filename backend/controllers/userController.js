@@ -3,9 +3,9 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
 // Fonction pour générer un token JWT
-const generateToken = (userId,firstName,lastName, email, phone,isDriver) => {
+const generateToken = (_id,firstName,lastName, email, phone,isDriver,photo,idCard) => {
   return jwt.sign(
-    { userId,firstName,lastName, email, phone,isDriver },
+    { _id,firstName,lastName, email, phone,isDriver,photo,idCard },
     process.env.JWT_SECRET,
     {expiresIn:'30d'}
   );
@@ -14,7 +14,7 @@ const generateToken = (userId,firstName,lastName, email, phone,isDriver) => {
 // Contrôleur pour enregistrer un nouvel utilisateur
 export const register = async (req, res) => {
   try {
-    const { firstName, lastName,gender ,email, phone, password, isDriver, vehicleInfo } = req.body;
+    const { firstName, lastName,gender ,email, phone, password } = req.body;
 
     // Vérifier si l'email ou le telephone existe deja
     const existingUser = await User.findOne({ $or: [{ email }, { phone }] });
@@ -26,13 +26,13 @@ export const register = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Créer un nouvel utilisateur avec le mot de passe hashé
-    const newUser = new User({ firstName, lastName,gender ,email, phone, password: hashedPassword, isDriver, vehicleInfo });
+    const newUser = new User({ firstName, lastName,gender ,email, phone, password: hashedPassword });
     await newUser.save();
     
     // Générer le token JWT
-    const token = generateToken(newUser._id,newUser.firstName,newUser.gender,newUser.lastName ,newUser.email, newUser.phone,newUser.isDriver);
+    const token = generateToken(newUser._id,newUser.firstName,newUser.lastName,newUser.gender ,newUser.email, newUser.phone,newUser.isDriver,newUser.photo,newUser.idCard);
     
-    res.status(201).json({ message: 'User created successfully', user: newUser, token });
+    res.status(201).json({ message: 'User created successfully', user: newUser, token:token });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -56,7 +56,7 @@ export const login = async (req, res) => {
     }
 
     // Générer le token JWT
-    const token = generateToken(user._id,user.firstName,user.lastName,user.gender ,user.email, user.phone,user.isDriver);
+    const token = generateToken(user._id,user.firstName,user.lastName,user.gender ,user.email, user.phone,user.isDriver,user.photo,user.idCard);
 
     res.status(200).json({ message: 'Login successful', user:user, token:token });
   } catch (error) {
@@ -92,19 +92,24 @@ const token = generateToken(user._id, user.email, user.phone,user.isDriver);
 export const updateProfile = async (req, res) => {
   const userId = req.user._id;
   const { firstName, lastName, email, phone } = req.body;
-
+  const { photo,idCard } = req.files;
+  
   try {
-    const user = await User.findByIdAndUpdate(
-      userId,
-      { firstName, lastName, email, phone },
-      { new: true }
-    );
-
+    const user = await User.findById(userId);
+    
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    res.status(200).json({ message: 'Profile updated successfully', user });
+    user.firstName = firstName
+    user.lastName = lastName 
+    user.email = email 
+    user.phone = phone
+    user.photo = photo[0].path 
+    user.idCard = idCard[0].path 
+    const updatedProfile = await user.save();
+
+    res.status(200).json({ message: 'Profile updated successfully', updatedProfile });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

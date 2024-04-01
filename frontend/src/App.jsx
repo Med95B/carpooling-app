@@ -3,13 +3,22 @@ import { useEffect } from 'react';
 import { setUser } from './store/userSlice.js';
 import Navbar from './components/layout/Navbar.jsx';
 import {Outlet} from 'react-router-dom'
-import decodeToken from './utils/decodeToken.js';
+import { jwtDecode } from "jwt-decode";
+
 
 const App = () => {
 
 
   const token = localStorage.getItem('token');
   const dispatch = useDispatch();
+  const decodeToken = (token) => {
+    try {
+      const decoded = jwtDecode(token);
+      return decoded;
+    } catch (error) {
+      return null;
+    }
+  };
 
 
 useEffect(()=>{

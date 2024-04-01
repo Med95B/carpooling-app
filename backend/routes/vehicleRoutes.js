@@ -13,7 +13,7 @@ import uploadVehicle from '../middlewares/uploadVehicleMiddleware.js';
 const router = express.Router();
 
 // Créer un nouveau véhicule
-router.post('/vehicles', authMiddleware,upload.fields([
+router.post('/vehicles', authMiddleware,uploadVehicle.fields([
   { name: 'driverLicenseImage', maxCount: 1 },
   { name: 'vehicleRegistrationImage', maxCount: 1 },
   { name: 'vehicleInsuranceImage', maxCount: 1 },

@@ -1,19 +1,20 @@
 import  { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { updateUserProfile, deleteUser,selectUser } from '../../store/userSlice.js';
+import { updateUserProfile, deleteUser,selectUser,selectError } from '../../store/userSlice.js';
 
 const Profile = () => {
   const user = useSelector(selectUser);
-  console.log(user);
+  const error=useSelector(selectError)
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     firstName: user.firstName,
     lastName: user.lastName,
     email: user.email,
     phone: user.phone,
-    photo: user.photo,
-    idCard:user.idCard
+    photo: user.photo ||'',
+    idCard:user.idCard||''
   });
+console.log(formData);
 
   const dispatch = useDispatch();
 
@@ -68,7 +69,7 @@ const Profile = () => {
       <h2>Profile</h2>
       <div className="card">
         <div className="card-body">
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} encType="multipart/form-data">
             <div className="mb-3">
               <label htmlFor="firstName" className="form-label">First Name</label>
               <input
@@ -175,6 +176,12 @@ const Profile = () => {
           </div>
         </div>
       </div>
+      {error&& <div className="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+            {error}
+          <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+      }
     </div>
   );
 };
