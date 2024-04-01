@@ -38,6 +38,31 @@ export const updateUserRole = createAsyncThunk('user/updateRole', async (data, {
   }
 });
 
+//Méthode pour mettre à jour le profil 
+export const updateUserProfile = createAsyncThunk(
+  'user/updateProfile',
+  async (userData, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.put(`/updateProfile`, userData);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+// Méthode pour supprimer le compte
+export const deleteUser = createAsyncThunk(
+  'user/delete',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.delete(`/deleteUser`);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
 
 // Action pour la déconnexion d'un utilisateur
 export const logoutUser = () => (dispatch) => {
@@ -93,6 +118,24 @@ const userSlice = createSlice({
         state.error = null;
       })
       .addCase(updateUserRole.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload.message;
+      })
+      .addCase(updateUserProfile.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.user = action.payload.user;
+        state.error = null;
+      })
+      .addCase(updateUserProfile.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload.message;
+      })
+      .addCase(deleteUser.fulfilled, (state) => {
+        state.status = 'succeeded';
+        state.user = null; 
+        state.error = null;
+      })
+      .addCase(deleteUser.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload.message;
       })

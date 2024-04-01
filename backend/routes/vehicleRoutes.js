@@ -8,7 +8,7 @@ import {
   getAllVehicles
 } from '../controllers/vehicleController.js';
 import authMiddleware from '../middlewares/authMiddleware.js';
-import upload from '../middlewares/uploadVehicleMiddleware.js';
+import uploadVehicle from '../middlewares/uploadVehicleMiddleware.js';
 
 const router = express.Router();
 
@@ -30,7 +30,7 @@ router.get('/vehicles', authMiddleware, getAllVehicles);
 router.get('/vehicles/:id', authMiddleware, getVehicleById);
 
 // Mettre à jour un véhicule par ID
-router.put('/:id', authMiddleware,upload.fields([
+router.put('/:id', authMiddleware,uploadVehicle.fields([
   { name: 'driverLicenseImage', maxCount: 1 },
   { name: 'vehicleRegistrationImage', maxCount: 1 },
   { name: 'vehicleInsuranceImage', maxCount: 1 },
