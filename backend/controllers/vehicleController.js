@@ -23,10 +23,10 @@ export const createVehicle = async (req, res) => {
       make,
       model,
       year,
-     driverLicenseImage: driverLicenseImage[0].path, // Récupérer le chemin du fichier
-      vehicleRegistrationImage: vehicleRegistrationImage[0].path,
-      vehicleInsuranceImage: vehicleInsuranceImage[0].path,
-      vehicleImage: vehicleImage[0].path,
+     driverLicenseImage: driverLicenseImage[0].filename, // Récupérer le chemin du fichier
+      vehicleRegistrationImage: vehicleRegistrationImage[0].filename,
+      vehicleInsuranceImage: vehicleInsuranceImage[0].filename,
+      vehicleImage: vehicleImage[0].filename,
       owner: userId
     });
 
@@ -75,10 +75,10 @@ export const updateVehicleById = async (req, res) => {
     vehicle.make = make || vehicle.make;
     vehicle.model = model || vehicle.model;
     vehicle.year = year || vehicle.year;
-    vehicle.driverLicenseImage = driverLicenseImage[0].path || vehicle.driverLicenseImage;
-    vehicle.vehicleRegistrationImage = vehicleRegistrationImage[0].path || vehicle.vehicleRegistrationImage;
-    vehicle.vehicleInsuranceImage = vehicleInsuranceImage[0].path || vehicle.vehicleInsuranceImage;
-    vehicle.vehicleImage = vehicleImage[0].path || vehicle.vehicleImage;
+    vehicle.driverLicenseImage = driverLicenseImage[0].filename || vehicle.driverLicenseImage;
+    vehicle.vehicleRegistrationImage = vehicleRegistrationImage[0].filename || vehicle.vehicleRegistrationImage;
+    vehicle.vehicleInsuranceImage = vehicleInsuranceImage[0].filename || vehicle.vehicleInsuranceImage;
+    vehicle.vehicleImage = vehicleImage[0].filename || vehicle.vehicleImage;
 
     //envoyer email à ladmin
     const userEmail=req.user.email

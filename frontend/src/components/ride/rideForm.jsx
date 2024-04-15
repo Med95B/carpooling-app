@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createRide, selectRidesStatus, selectRidesError } from '../../store/rideSlice.js'; 
 import { Link } from 'react-router-dom';
+import MapCard from '../map/MapCard.jsx';
+
 
 const RideForm = () => {
   const [departure, setDeparture] = useState('');
@@ -16,10 +18,13 @@ const RideForm = () => {
     setArrival('');
   };
 
+  
+
   return (
     <div className="container mt-5">
       <h2 className="mb-4">Ride Form</h2>
       <h3 className='text-center'>Ajouter un trajet</h3>
+      <MapCard/>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <label htmlFor="departure" className="form-label">Departure</label>

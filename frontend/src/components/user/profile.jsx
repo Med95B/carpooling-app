@@ -6,6 +6,7 @@ import config from '../../config/config.js';
 const Profile = () => {
 
   const user = useSelector(selectUser);
+  const photoUser=config.baseURL+user.photo
   console.log(user);
   const error=useSelector(selectError)
   const message=useSelector(selectMessage)
@@ -88,7 +89,7 @@ const dispatch = useDispatch();
     <div className="container mt-5">
       <h2>Profile</h2>
       <div className="card">
-      <img src={config.baseURL+user.photo} className="card-img-top mx-auto mt-3" alt="profile"
+      <img src={photoUser} className="card-img-top mx-auto mt-3" alt="profile"
       style={{width:'200px',height:'200px',objectFit:'cover',borderRadius:'50%'}}
       />
         <div className="card-body">

@@ -129,13 +129,15 @@ useEffect(() => {
         <button type="submit" className="btn btn-primary">Enregistrer</button>
       </form>
       { (tripStatus === 'failed' || rideStauts=== 'failed') && (
-        <div className="alert alert-danger mt-5" role="alert">
+        <div className="alert alert-danger alert-dismissible fade show mt-3" role="alert">
           {tripError || rideError}
+          <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
       )}
       { (tripStatus === 'succeeded' )&& (
-        <div className="alert alert-success mt-5" role="alert">
+        <div className="alert alert-success alert-dismissible fade show mt-3" role="alert">
           Trip request successfully created!
+          <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
       )}
     </div>
