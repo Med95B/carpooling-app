@@ -4,8 +4,10 @@ import LocationMarker from './LocationMarker';
 
 
 function MapCard() {
+
+  const center=[31.792306, -7.080168]
   return (
-    <MapContainer center={[31.792306, -7.080168]} zoom={13} scrollWheelZoom={false}
+    <MapContainer center={center} zoom={13} scrollWheelZoom={false}
     style={{height:'400px',margin:'35px'}}
     >
   <TileLayer
