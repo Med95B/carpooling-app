@@ -2,7 +2,7 @@ import { useState } from "react"
 import { Marker, Popup, useMapEvents } from "react-leaflet"
 import { OpenStreetMapProvider } from "leaflet-geosearch"
 
-function LocationMarker() {
+function CurrentLocation() {
   const [position, setPosition] = useState(null)
   const [locationName, setLocationName] = useState("")
 
@@ -33,11 +33,15 @@ function LocationMarker() {
     },
   })
 
-  return position === null ? null : (
+  return position === null ?    <Popup position={[31.792306, -7.080168]} closeButton={false} autoClose={false}>
+  <div>
+    <p>Cliquez sur la carte pour voir votre position actuelle!</p>
+  </div>
+</Popup> : (
     <Marker position={position}>
       <Popup>{locationName}</Popup>
     </Marker>
   )
 }
 
-export default LocationMarker
+export default CurrentLocation

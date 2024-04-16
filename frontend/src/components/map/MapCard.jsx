@@ -1,6 +1,6 @@
 import 'leaflet/dist/leaflet.css';
 import{MapContainer,TileLayer,Popup} from 'react-leaflet'
-import LocationMarker from './LocationMarker';
+import LocationMarker from './CurrentLocation';
 
 
 function MapCard() {
