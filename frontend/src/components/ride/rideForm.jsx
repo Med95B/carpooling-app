@@ -5,13 +5,13 @@ import { Link } from 'react-router-dom';
 import RideMap from './RideMap.jsx';
 
 const RideForm = () => {
-  const [departure, setDeparture] = useState('');
+  const [departure, setDeparture] = useState({});
   console.log(departure);
-  const [arrival, setArrival] = useState('');
+  const [arrival, setArrival] = useState({});
   console.log(arrival);
-  const [routes, setRoutes] = useState([]);
+  const [routes, setRoutes] = useState([{}]);
   console.log(routes);
-  const [selectedRoute,setSelectedRoute]=useState('')
+  const [selectedRoute,setSelectedRoute]=useState({})
   console.log(selectedRoute);
   const status = useSelector(selectRidesStatus);
   const error = useSelector(selectRidesError);
@@ -25,14 +25,16 @@ const RideForm = () => {
     setDeparture(waypoints[0]);
     setArrival(waypoints[waypoints.length - 1]);
   };
+ 
 
   const handleSubmit = (e) => {
     e.preventDefault();
    
-    dispatch(createRide({ departure:departure.latlng,arrival: arrival.latlng, route: selectedRoute }));
-    setDeparture('');
-    setArrival('');
-    setRoutes([]);
+    dispatch(createRide({ departure:departure.latlng,arrival: arrival.latlng, route: selectedRoute.coordinates }));
+    setDeparture({});
+    setArrival({});
+    setRoutes([{}]);
+    setSelectedRoute({})
   };
 
   return (
@@ -47,7 +49,7 @@ const RideForm = () => {
             type="text"
             className="form-control"
             id="departure"
-            value={departure.name}
+            value={departure.name||''}
             readOnly
             required
           />
@@ -58,18 +60,18 @@ const RideForm = () => {
             type="text"
             className="form-control"
             id="arrival"
-            value={arrival.name}
+            value={arrival.name||''}
             readOnly
             required
           />
         </div>
         <div className="mb-3">
           <label htmlFor="route" className="form-label">Select Route</label>
-       <select className='form-select' name="route" id="route" onChange={e=>setSelectedRoute(e.target.value)}
-       value={selectedRoute}
-       >
-        {routes.map((r,i)=><option key={i} value={r.name}>{r.name}</option>)}
-       </select>
+      <select className='form-select' name="route" id="route" onChange={e=>setSelectedRoute(routes[e.target.value])}
+      value={selectedRoute?selectedRoute:routes[0]}
+      >
+        {routes.map((r,i)=><option key={i} value={i}>{r.name}</option>)}
+       </select> 
         </div>
         <button type="submit" className="btn btn-primary">Enregistrer</button>
       </form>
