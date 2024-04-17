@@ -19,6 +19,7 @@ const RideForm = () => {
 
   const handleRoutes = (routes) => {
     setRoutes(routes);
+    setSelectedRoute(routes[0])
   };
 
   const handleWaypointsSelect = (waypoints) => {
@@ -30,7 +31,15 @@ const RideForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
    
-    dispatch(createRide({ departure:departure.latlng,arrival: arrival.latlng, route: selectedRoute.coordinates }));
+    dispatch(createRide({ departure:{
+      name:departure.name,
+      coordinates:departure.latLng},
+      arrival: {
+        name:arrival.name,
+        coordinates:arrival.latLng}, 
+        route: {
+          name:selectedRoute.name,
+          coordinates:selectedRoute.coordinates} }));
     setDeparture({});
     setArrival({});
     setRoutes([{}]);
@@ -67,9 +76,7 @@ const RideForm = () => {
         </div>
         <div className="mb-3">
           <label htmlFor="route" className="form-label">Select Route</label>
-      <select className='form-select' name="route" id="route" onChange={e=>setSelectedRoute(routes[e.target.value])}
-      value={selectedRoute?selectedRoute:routes[0]}
-      >
+      <select className='form-select' name="route" id="route" onChange={e=>setSelectedRoute(routes[e.target.value])}>
         {routes.map((r,i)=><option key={i} value={i}>{r.name}</option>)}
        </select> 
         </div>
@@ -77,13 +84,15 @@ const RideForm = () => {
       </form>
       <Link to={'/role'} className="btn btn-success mt-3">Go for trip</Link>
       {status === 'failed' && (
-        <div className="alert alert-danger mt-5" role="alert">
+        <div className="alert alert-danger alert-dismissible fade show mt-5" role="alert">
           {error}
+          <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
       )}
       {status === 'succeeded' && (
-        <div className="alert alert-success mt-5" role="alert">
+        <div className="alert alert-success alert-dismissible fade show mt-5" role="alert">
           Ride successfully created!
+          <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
       )}
     </div>

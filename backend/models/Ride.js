@@ -7,13 +7,48 @@ const rideSchema = new mongoose.Schema({
     required: true
   },
   departure: {
-    type: String,
-    required: true
+    name: {
+      type: String,
+      required: true
+    },
+    coordinates: {
+      lat: {
+        type: Number,
+        required: true
+      },
+      lng: {
+        type: Number,
+        required: true
+      }
+    }
   },
   arrival: {
-    type: String,
-    required: true
+    name: {
+      type: String,
+      required: true
+    },
+    coordinates: {
+      lat: {
+        type: Number,
+        required: true
+      },
+      lng: {
+        type: Number,
+        required: true
+      }
+    }
+  },
+  route:{
+    name:String,
+    coordinates:[
+      {
+        lat: Number,
+        lng: Number
+      }
+    ]
   }
+
+  
 });
 
 const Ride = mongoose.model('Ride', rideSchema);

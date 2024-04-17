@@ -5,7 +5,7 @@ import Ride from '../models/Ride.js';
 // creer demane de trip (trip request)
 export const createTrip = async (req, res) => {
   const { tripType, date, time, startTime, endTime, days, selectedRide } = req.body;
-  const userId = req.user
+  const userId = req.user._id
   try {
     // verifier le role du user (driver ou passager)
     const user = await User.findById(userId);

@@ -27,11 +27,13 @@ useEffect(()=>{
 
 
   return (
-    <div>
-      <Navbar/>
+<div>
+<Navbar/>
       <h1 className="text-center mt-5">Welcome to CommunityDrive</h1>
       <Outlet/>
-    </div>
+   
+</div>
+    
   );
 };
 

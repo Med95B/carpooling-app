@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createTrip, selectTripsStatus, selectTripsError } from '../../store/tripSlice';
+import { getUserRides ,selectRides,selectRidesError, selectRidesStatus} from '../../store/rideSlice.js';
 import VehicleForm from '../vehicle/vehicleForm';
-import { selectRides } from '../../store/rideSlice';
 import { selectVehicles } from '../../store/vehicleSlice';
 
 const DriverTripForm = () => {
@@ -21,11 +21,19 @@ const DriverTripForm = () => {
   const tripStatus = useSelector(selectTripsStatus);
   const tripError = useSelector(selectTripsError);
   const vehicles = useSelector(selectVehicles);
-  const rides=useSelector(selectRides)
+  const rides = useSelector(selectRides);
+  const rideError=useSelector(selectRidesError)
+  const rideStauts=useSelector(selectRidesStatus)
+
+  console.log(rides);
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
+
+  useEffect(() => {
+    dispatch(getUserRides());
+  }, [dispatch]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -129,7 +137,7 @@ const DriverTripForm = () => {
           <select className="form-select" id="selectedRide" name="selectedRide" value={formData.selectedRide} onChange={handleChange} required>
             <option value="">Select Ride</option>
             {rides.map((ride) => (
-              <option key={ride._id} value={ride._id}>{ride.departure} - {ride.arrival}</option>
+              <option key={ride._id} value={ride._id}>{ride.route.name}</option>
             ))}
           </select>
         </div>
@@ -149,17 +157,18 @@ const DriverTripForm = () => {
 
       <button type="submit" className="btn btn-primary">Enregistrer</button>
     </form>
-    
-    {tripStatus === 'failed' && (
-      <div className="alert alert-danger mt-3" role="alert">
-        {tripError}
-      </div>
-    )}
-    {tripStatus === 'succeeded' && (
-      <div className="alert alert-success mt-3" role="alert">
-        Trip request successfully created!
-      </div>
-    )}
+     { (tripStatus === 'failed' || rideStauts=== 'failed') && (
+        <div className="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+          {tripError || rideError}
+          <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      )}
+      { (tripStatus === 'succeeded' )&& (
+        <div className="alert alert-success alert-dismissible fade show mt-3" role="alert">
+          Trip request successfully created!
+          <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      )}
   </div>
 );
 };

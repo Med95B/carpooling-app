@@ -122,7 +122,7 @@ useEffect(() => {
           <select className="form-select" id="selectedRide" name="selectedRide" value={formData.selectedRide} onChange={handleChange} required>
             <option value="">Select Ride</option>
             {rides.map((ride) => (
-              <option key={ride._id} value={ride._id}>{ride.departure} - {ride.arrival}</option>
+              <option key={ride._id} value={ride._id}>{ride.route.name}</option>
             ))}
           </select>
         </div>

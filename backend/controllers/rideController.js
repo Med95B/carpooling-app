@@ -2,13 +2,14 @@ import Ride from '../models/Ride.js';
 
 // Créer un nouveau trajet
 export const createRide = async (req, res) => {
-  const { departure, arrival } = req.body;
+  const { departure, arrival,route } = req.body;
   const user = req.user;
   try {
     const newRide = new Ride({
       user,
       departure,
-      arrival
+      arrival,
+      route
     });
 
     const savedRide = await newRide.save();
