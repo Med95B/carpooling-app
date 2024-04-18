@@ -19,7 +19,6 @@ const RideForm = () => {
 
   const handleRoutes = (routes) => {
     setRoutes(routes);
-    setSelectedRoute(routes[0])
   };
 
   const handleWaypointsSelect = (waypoints) => {
@@ -77,6 +76,7 @@ const RideForm = () => {
         <div className="mb-3">
           <label htmlFor="route" className="form-label">Select Route</label>
       <select className='form-select' name="route" id="route" onChange={e=>setSelectedRoute(routes[e.target.value])}>
+      <option value="">Select Route</option>
         {routes.map((r,i)=><option key={i} value={i}>{r.name}</option>)}
        </select> 
         </div>

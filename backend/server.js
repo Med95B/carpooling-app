@@ -31,6 +31,7 @@ app.use('/api', rideRoutes);
 app.use('/api', tripRoutes);
 app.use('/api',vehicleRoutes)
 app.use('/api',invitationRoutes)
+
 //server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

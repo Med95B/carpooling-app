@@ -1,7 +1,10 @@
+/* eslint-disable react/prop-types */
+// marche pas parfaitement conflit de cros avec lapi nominatim
 import  { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { searchTripsByCriteria, selectTrips, selectTripsStatus, selectTripsError } from '../../store/tripSlice';
 import { Link } from 'react-router-dom';
+import { OpenStreetMapProvider } from 'leaflet-geosearch';
 
 const RechercheTripForm = () => {
   const [formData, setFormData] = useState({
@@ -9,6 +12,9 @@ const RechercheTripForm = () => {
     destination: '',
     date: ''
   });
+
+  const [departureSuggestions, setDepartureSuggestions] = useState([]);
+  const [destinationSuggestions, setDestinationSuggestions] = useState([]);
 
   const trips = useSelector(selectTrips);
   const tripsStatus = useSelector(selectTripsStatus);
@@ -36,32 +42,67 @@ const RechercheTripForm = () => {
     return date.toISOString().split('T')[0];
   };
 
+  // Fonction pour rechercher des suggestions de lieux
+  const searchLocation = async (query, name) => {
+    const provider = new OpenStreetMapProvider();
+    const results = await provider.search({ query });
+    const locations = results.map((result) => ({
+      name: result.label,
+      value: result.raw
+    }));
+    if (name === 'departure') {
+      setDepartureSuggestions(locations);
+    } else if (name === 'destination') {
+      setDestinationSuggestions(locations);
+    }
+  };
+
+  const handleDepartureChange = (e) => {
+    const { value } = e.target;
+    setFormData({ ...formData, departure: value });
+    searchLocation(value, 'departure');
+  };
+
+  const handleDestinationChange = (e) => {
+    const { value } = e.target;
+    setFormData({ ...formData, destination: value });
+    searchLocation(value, 'destination');
+  };
+
+  const handleSuggestionClick = (suggestion, name) => {
+    if (name === 'departure') {
+      setFormData({ ...formData, departure: suggestion.name });
+      setDepartureSuggestions([]);
+    } else if (name === 'destination') {
+      setFormData({ ...formData, destination: suggestion.name });
+      setDestinationSuggestions([]);
+    }
+  };
+
   return (
     <div className="container mt-5">
       <h2>Rechercher un trip</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <label htmlFor="departure" className="form-label">Départ</label>
-          <input
-            type="text"
-            className="form-control"
+          <AutocompleteInput
             id="departure"
             name="departure"
             value={formData.departure}
-            onChange={handleChange}
-            required
+            onChange={handleDepartureChange}
+            suggestions={departureSuggestions}
+            handleSuggestionClick={(suggestion) => handleSuggestionClick(suggestion, 'departure')}
           />
         </div>
         <div className="mb-3">
           <label htmlFor="destination" className="form-label">Destination</label>
-          <input
-            type="text"
-            className="form-control"
+          <AutocompleteInput
             id="destination"
             name="destination"
             value={formData.destination}
-            onChange={handleChange}
-            required
+            onChange={handleDestinationChange}
+            suggestions={destinationSuggestions}
+            handleSuggestionClick={(suggestion) => handleSuggestionClick(suggestion, 'destination')}
           />
         </div>
         <div className="mb-3">
@@ -78,6 +119,7 @@ const RechercheTripForm = () => {
         </div>
         <button type="submit" className="btn btn-primary">Rechercher</button>
       </form>
+      {/* Affichage des résultats de la recherche */}
       {tripsStatus === 'loading' && (
         <div className="alert alert-info mt-3" role="alert">
           Recherche en cours...
@@ -117,6 +159,33 @@ const RechercheTripForm = () => {
           <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
       )}
+    </div>
+  );
+};
+
+// Composant pour l'autocomplétion
+const AutocompleteInput = ({ id, name, value, onChange, suggestions, handleSuggestionClick }) => {
+  return (
+    <div className="autocomplete">
+      <input
+        type="text"
+        id={id}
+        name={name}
+        value={value}
+        onChange={onChange}
+        className="form-control"
+      />
+      <div className="suggestions">
+        {suggestions.map((suggestion, index) => (
+          <div
+            key={index}
+            className="suggestion"
+            onClick={() => handleSuggestionClick(suggestion, name)}
+          >
+            {suggestion.name}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
