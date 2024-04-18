@@ -6,6 +6,7 @@ import { selectUser } from '../../store/userSlice';
 const UserInvitation = () => {
   const dispatch = useDispatch();
   const invitations = useSelector(selectInvitations);
+  console.log(invitations);
 const invitationsError=useSelector(selectInvitationsError)
 const invitationMessage=useSelector(selectInvitationsMessage)
 const invitationsStatus=useSelector(selectInvitationsStatus)
@@ -49,18 +50,17 @@ useEffect(() => {
               <div className="card-body">
                 <h5 className="card-title">Invitation</h5>
                 {invitation.sender && (
-                  <p className="card-text">From: {invitation.sender.firstName} {invitation.sender.lastName}</p>
+                  <p className="card-text">From : {invitation.sender.firstName} {invitation.sender.lastName}</p>
                 )}
                 {invitation.recipient && (
-                  <p className="card-text">To: {invitation.recipient.firstName} {invitation.recipient.lastName}</p>
+                  <p className="card-text">To : {invitation.recipient.firstName} {invitation.recipient.lastName}</p>
                 )}
-                <p className="card-text">Status: {invitation.status}</p>
+                <p className="card-text">Status : {invitation.status}</p>
                 {invitation.trip && (
                   <div>
-                    <p className="card-text">Trip Details:</p>
                     <ul className="list-group">
-                      <li className="list-group-item">Departure: {invitation.trip.ride.departure}</li>
-                      <li className="list-group-item">Arrival: {invitation.trip.ride.arrival}</li>
+                      <li className="list-group-item"><strong>Depart :</strong> {invitation.trip.ride?.departure.name}</li>
+                      <li className="list-group-item"><strong>Destination :</strong> {invitation.trip.ride?.arrival.name}</li>
                     </ul>
                   </div>
                 )}
@@ -72,7 +72,7 @@ useEffect(() => {
                    {invitation.recipient && currentUser._id === invitation.recipient._id && invitation.status === 'pending' && (
                 <div className='mt-2'>
                   <button className="btn btn-success me-2" onClick={() => handleAcceptInvitation(invitation._id)}>Accept</button>
-                  <button className="btn btn-danger" onClick={() => handleDeclineInvitation(invitation._id)}>Decline</button>
+                  <button className="btn btn-warning" onClick={() => handleDeclineInvitation(invitation._id)}>Decline</button>
                 </div>
               )}
               </div>

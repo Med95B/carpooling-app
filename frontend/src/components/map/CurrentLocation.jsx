@@ -33,7 +33,7 @@ function CurrentLocation() {
     },
   })
 
-  return position === null ?    <Popup position={[31.792306, -7.080168]} closeButton={false} autoClose={false}>
+  return position === null ?    <Popup position={[34.020882, -6.841650]} closeButton={false} autoClose={false}>
   <div>
     <p>Cliquez sur la carte pour voir votre position actuelle!</p>
   </div>

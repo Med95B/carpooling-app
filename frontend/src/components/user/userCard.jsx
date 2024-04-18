@@ -7,7 +7,7 @@ const UserCard = ({ user, tripId }) => {
   const dispatch = useDispatch();
 
   const handleInvite = (userId) => {
-    dispatch(sendInvitation({ recipientId: userId, tripId }));
+    dispatch(sendInvitation({ recipientId: userId,tripId: tripId }));
   };
 
   return (

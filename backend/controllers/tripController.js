@@ -55,13 +55,42 @@ export const searchTripsByCriteria = async (req, res) => {
   const user = req.user;
 
   try {
-    const rides = await Ride.find({
-      departure: departure,
-      arrival: destination
+    const departureCoordinates = [departure.lat, departure.lng];
+    const destinationCoordinates = [destination.lat, destination.lng];
+
+    
+    // Recherche des trajets au départ de la position spécifiée
+    const departureRides = await Ride.find({
+      'departure.coordinates': {
+        $nearSphere: {
+          $geometry: {
+            type: 'Point',
+            coordinates: [departureCoordinates[0], departureCoordinates[1]]
+          },
+          $maxDistance: 3000 // Recherche dans un rayon de 1 kilomètre
+        }
+      }
     });
 
-    const rideIds = rides.map(ride => ride._id);
-    let trips
+    // Recherche des trajets arrivant à la position spécifiée
+    const arrivalRides = await Ride.find({
+      'arrival.coordinates': {
+        $nearSphere: {
+          $geometry: {
+            type: 'Point',
+            coordinates: [destinationCoordinates[1], destinationCoordinates[0]]
+          },
+          $maxDistance: 3000 // Recherche dans un rayon de 1 kilomètre
+        }
+      }
+    });
+
+    // Fusion des résultats des deux recherches
+    const rideIds = [...departureRides, ...arrivalRides].map(ride => ride._id);
+    //const rideIds = departureRides.map(ride => ride._id);
+    //const rideIds = arrivalRides.map(ride => ride._id);
+
+    let trips;
     if (user.isDriver) {
       trips = await Trip.find({
         'ride': { $in: rideIds },
@@ -72,19 +101,18 @@ export const searchTripsByCriteria = async (req, res) => {
         ]
       }).populate('ride')
         .populate('passengers', 'firstName lastName email phone gender');
-    }else{
+    } else {
       trips = await Trip.find({
         'ride': { $in: rideIds },
-        'driver': { $ne: null }, 
+        'driver': { $ne: null },
         $or: [
           { 'singleTrip.date': date },
           { 'dailyTrip.days': { $in: [new Date(date).toLocaleDateString('en-US', { weekday: 'long' })] } },
         ]
       }).populate('ride')
-      .populate('driver', 'firstName lastName email phone gender') 
-      .populate('passengers', 'firstName lastName email phone gender');
+        .populate('driver', 'firstName lastName email phone gender')
+        .populate('passengers', 'firstName lastName email phone gender');
     }
-   
 
     res.status(200).json(trips);
   } catch (error) {

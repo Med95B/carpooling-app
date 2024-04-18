@@ -10,7 +10,6 @@ const LeafletGeoCoder = () => {
   useEffect(() => {
     L.Control.geocoder({
       defaultMarkGeocode: false,
-      autocomplete: true,
     })
       .on("markgeocode", function (e) {
         var latlng = e.geocode.center;

@@ -2,14 +2,23 @@ import Ride from '../models/Ride.js';
 
 // Créer un nouveau trajet
 export const createRide = async (req, res) => {
-  const { departure, arrival,route } = req.body;
+  const { departure, arrival, route } = req.body;
   const user = req.user;
   try {
     const newRide = new Ride({
       user,
-      departure,
-      arrival,
-      route
+      departure: {
+        name: departure.name,
+        coordinates: [departure.coordinates.lat, departure.coordinates.lng]
+      },
+      arrival: {
+        name: arrival.name,
+        coordinates: [arrival.coordinates.lat, arrival.coordinates.lng]
+      },
+      route:{
+        name:route.name,
+        coordinates:route.coordinates
+      }
     });
 
     const savedRide = await newRide.save();
@@ -18,6 +27,7 @@ export const createRide = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 // Obtenir tous les trajets
 export const getAllRides = async (req, res) => {

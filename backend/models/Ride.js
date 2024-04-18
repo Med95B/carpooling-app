@@ -12,14 +12,8 @@ const rideSchema = new mongoose.Schema({
       required: true
     },
     coordinates: {
-      lat: {
-        type: Number,
-        required: true
-      },
-      lng: {
-        type: Number,
-        required: true
-      }
+      type: [Number], // Array of numbers [longitude, latitude]
+      required: true
     }
   },
   arrival: {
@@ -28,30 +22,27 @@ const rideSchema = new mongoose.Schema({
       required: true
     },
     coordinates: {
-      lat: {
-        type: Number,
-        required: true
-      },
-      lng: {
-        type: Number,
-        required: true
-      }
+      type: [Number], // Array of numbers [longitude, latitude]
+      required: true
     }
   },
-  route:{
-    name:String,
-    coordinates:[
+  route: {
+    name: String,
+    coordinates: [
       {
         lat: Number,
         lng: Number
       }
     ]
   }
-
-  
 });
+
+// Définition des index géospatiaux
+rideSchema.index({ 'departure.coordinates': '2dsphere' });
+rideSchema.index({ 'arrival.coordinates': '2dsphere' });
 
 const Ride = mongoose.model('Ride', rideSchema);
 
 export default Ride;
+
 

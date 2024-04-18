@@ -62,6 +62,12 @@ const Navbar = () => {
                   <li>
                     <Link className="dropdown-item" to="/invitations">Invitations</Link>
                   </li>
+                  <li>
+                    <Link className="dropdown-item" to="/rides">Trajets</Link>
+                  </li>
+                  <li>
+                    <Link className="dropdown-item" to="/trips">Voyages</Link>
+                  </li>
                   <li><hr className="dropdown-divider" /></li>
                   <li>
                     <button className="dropdown-item" onClick={handleLogout}>Logout</button>

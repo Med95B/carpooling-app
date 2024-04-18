@@ -14,7 +14,7 @@ const PassengerTrip = () => {
   };
 
   return (
-    <div className="container mt-5">
+    <div className="container my-3">
       <h2>Passenger Trip</h2>
       <div className="mb-3">
         <button
