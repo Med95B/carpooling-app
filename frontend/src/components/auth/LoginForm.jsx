@@ -21,7 +21,7 @@ const LoginForm = () => {
     e.preventDefault();
     try {
       const res = await dispatch(loginUser(formData));
-      if (res.payload) {
+      if (res.payload.user) {
         navigate('/ride'); 
       }
     } catch (error) {

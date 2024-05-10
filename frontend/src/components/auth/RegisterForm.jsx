@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { registerUser, selectStatus, selectError } from '../../store/userSlice.js';
-import { Link ,useNavigate} from 'react-router-dom';
+import { registerUser, selectStatus, selectError,selectMessage } from '../../store/userSlice.js';
+import { Link } from 'react-router-dom';
 
 const RegisterForm = () => {
   const dispatch = useDispatch();
   const status = useSelector(selectStatus);
   const error = useSelector(selectError);
-  const navigate=useNavigate()
+const message=useSelector(selectMessage)
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -31,13 +31,20 @@ const RegisterForm = () => {
     // eslint-disable-next-line no-unused-vars
     const { confirmPassword, ...dataToSend } = formData;
     try {
-      const res = await dispatch(registerUser(dataToSend));
-      if (res.payload) {
-        navigate('/ride'); 
-      }
+      await dispatch(registerUser(dataToSend));
+    
     } catch (error) {
       console.error(error);
     }
+    setFormData({
+      firstName: '',
+      lastName: '',
+      gender:'male',
+      email: '',
+      phone: '',
+      password: '',
+      confirmPassword: ''
+    })
   };
 
   return (
@@ -45,16 +52,24 @@ const RegisterForm = () => {
       <h2>Register</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
-          <input type="text" className="form-control" name="firstName" placeholder="First Name" onChange={handleChange} />
+          <input type="text" className="form-control" name="firstName" placeholder="First Name" onChange={handleChange} 
+          value={formData.firstName}
+          />
         </div>
         <div className="mb-3">
-          <input type="text" className="form-control" name="lastName" placeholder="Last Name" onChange={handleChange} />
+          <input type="text" className="form-control" name="lastName" placeholder="Last Name" onChange={handleChange} 
+          value={formData.lastName}
+          />
         </div>
         <div className="mb-3">
-          <input type="email" className="form-control" name="email" placeholder="Email" onChange={handleChange} />
+          <input type="email" className="form-control" name="email" placeholder="Email" onChange={handleChange} 
+          value={formData.email}
+          />
         </div>
         <div className="mb-3">
-          <input type="text" className="form-control" name="phone" placeholder="Phone" onChange={handleChange} />
+          <input type="text" className="form-control" name="phone" placeholder="Phone" onChange={handleChange} 
+          value={formData.phone}
+          />
         </div>
         <div className="mb-3">
           <label htmlFor="gender" className="form-label">Gender</label>
@@ -64,10 +79,14 @@ const RegisterForm = () => {
           </select>
         </div>
         <div className="mb-3">
-          <input type="password" className="form-control" name="password" placeholder="Password" onChange={handleChange} />
+          <input type="password" className="form-control" name="password" placeholder="Password" onChange={handleChange} 
+          value={formData.password}
+          />
         </div>
         <div className="mb-3">
-          <input type="password" className="form-control" name="confirmPassword" placeholder="Confirm Password" onChange={handleChange} />
+          <input type="password" className="form-control" name="confirmPassword" placeholder="Confirm Password" onChange={handleChange} 
+          value={formData.confirmPassword}
+          />
         </div>
         <button type="submit" className="btn btn-primary">Register</button>
       </form>
@@ -75,6 +94,12 @@ const RegisterForm = () => {
       {status === 'failed' && (
         <div className="alert alert-danger mt-5" role="alert">
           {error}
+        </div>
+      )}
+        {status === 'succeeded' && (
+        <div className="alert alert-info alert-dismissible fade show mt-5" role="alert">
+          {message}
+          <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
       )}
     </div>

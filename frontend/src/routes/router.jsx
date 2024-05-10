@@ -12,6 +12,7 @@ import DriverTrip from '../components/trip/driverTrip.jsx';
 import NotFoundPage from '../components/auth/NotFoundPage.jsx';
 import DetailsTrip from '../components/trip/detailsTrip.jsx';
 import Profile from "../components/user/profile.jsx";
+import Activation from "../components/auth/Activation.jsx";
 
 
 export const router=createBrowserRouter([
@@ -26,6 +27,10 @@ export const router=createBrowserRouter([
                 path:'/register',
                 element: <GuestRoute><RegisterForm /></GuestRoute> 
              },
+             {
+               path:'/activation/:token',
+               element:<GuestRoute><Activation/></GuestRoute>
+           },
              {
                 path:'/profile',
                 element:<AuthRoute><Profile /></AuthRoute>

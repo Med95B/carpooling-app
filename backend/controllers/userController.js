@@ -1,14 +1,11 @@
 import User from '../models/User.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import activationMail from '../services/userActivationMail.js';
 
 // Fonction pour générer un token JWT
-const generateToken = (_id,firstName,lastName,gender ,email, phone,isDriver,photo,idCard) => {
-  return jwt.sign(
-    { _id,firstName,lastName, gender,email, phone,isDriver,photo,idCard },
-    process.env.JWT_SECRET,
-    {expiresIn:'30d'}
-  );
+const generateToken = (user,t) => {
+  return jwt.sign({user},process.env.JWT_SECRET,{expiresIn:t})
 };
 
 // Contrôleur pour enregistrer un nouvel utilisateur
@@ -24,19 +21,76 @@ export const register = async (req, res) => {
 
     // Hasher le mot de passe
     const hashedPassword = await bcrypt.hash(password, 10);
+// Créer un objet user avec les infos recuperées de la req
+const newUser = { firstName:firstName, lastName:lastName,gender:gender ,email:email, phone:phone, password:hashedPassword }
+     // Générer le token JWT pour verification d'email
+     const activationToken = generateToken(newUser,'5m');
+     const activationUrl = `${process.env.appURL}/activation/${activationToken}`;
 
-    // Créer un nouvel utilisateur avec le mot de passe hashé
+           //envoyer l'email de verification
+           await activationMail({
+            email: newUser.email,
+            subject: "Activate your account",
+            message: `Hello ${newUser.firstName+' '+newUser.lastName}, please click on the link to activate your account: ${activationUrl}`,
+          });
+          
+          res.status(201).json({ message: `please check your email : ${newUser.email} to activate your account!` });
+        } catch (error) {
+          res.status(500).json({ message: error.message });
+        }
+      };
+
+  /*  // Créer un nouvel utilisateur avec le mot de passe hashé
     const newUser = new User({ firstName, lastName,gender ,email, phone, password: hashedPassword });
     await newUser.save();
     
     // Générer le token JWT
     const token = generateToken(newUser._id,newUser.firstName,newUser.lastName,newUser.gender ,newUser.email, newUser.phone,newUser.isDriver,newUser.photo,newUser.idCard);
-    
+  
+
     res.status(201).json({ message: 'User created successfully', user: newUser, token:token });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-};
+};  */
+
+// activer un nouvel user
+export const activation= async (req, res) => {
+
+  const activationToken=req.body.token
+
+  try {
+      
+      const newUser = jwt.verify(activationToken,process.env.JWT_SECRET);
+      
+if (!newUser) {
+        return res.status(400).json({ message: 'Invalid Token!!!' });
+
+      }
+      const { firstName, lastName,gender ,email, phone, password } = newUser.user;
+
+      let user = await User.findOne({ $or: [{ email }, { phone }] });
+
+      if (user) {
+        return res.status(400).json({ message: 'User already exists' });
+      }
+
+      user = new User({
+        firstName, lastName,gender ,email, phone, password
+      });
+    
+      const savedUser=await user.save()
+      // Générer le token JWT
+      const token = generateToken(savedUser,'30d');
+
+      res.status(201).json({ message: 'your account activated successfully', user: savedUser, token:token });
+
+
+
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
 
 // Contrôleur pour se connecter et obtenir un token JWT
 export const login = async (req, res) => {
@@ -55,8 +109,8 @@ export const login = async (req, res) => {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
 
-    // Générer le token JWT
-    const token = generateToken(user._id,user.firstName,user.lastName,user.gender ,user.email, user.phone,user.isDriver,user.photo,user.idCard);
+   // Générer le token JWT
+   const token = generateToken(user,'30d');
 
     res.status(200).json({ message: 'Login successful', user:user, token:token });
   } catch (error) {

@@ -24,7 +24,7 @@ useEffect(()=>{
 
   const token = localStorage.getItem('token');
   if (token) {
-    const user=decodeToken(token)
+    const {user}=decodeToken(token)
     console.log(user);
     dispatch(setUser(user))
   

@@ -1,9 +1,9 @@
 import transporter from './mailer.js'; 
 
-const sendNewVehicleEmail = (from, vehicleData) => {
+const sendNewVehicleEmail = (sender, vehicleData) => {
   const mailOptions = {
-    from: from, 
-    to:  process.env.EMAIL_ADMIN, 
+    from: sender, 
+    to:  process.env.SMTP_MAIL, 
     subject:'Un nouveau véhicule a été enregistré', 
     html: `
     <ul>

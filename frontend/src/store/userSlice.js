@@ -2,17 +2,28 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../config/axiosWithAuth';
 
 
-
-// Action asynchrone pour l'inscription d'un utilisateur
+// Action asynchrone pour l'inscription d'un user
 export const registerUser = createAsyncThunk('user/register', async (userData, { rejectWithValue }) => {
   try {
     const response = await axiosInstance.post(`/register`, userData);
-    // Sauvegarder le token dans le localStorage
-    localStorage.setItem('token', response.data.token);
+    
     return response.data;
+
   } catch (error) {
     return rejectWithValue(error.response.data);
   }
+});
+
+// Action asynchrone pour l'activation d'un user
+export const activateUser = createAsyncThunk('user/activate', async (activationToken, { rejectWithValue }) => {
+try {
+  const response = await axiosInstance.post(`/activation`, activationToken);
+  // Sauvegarder le token dans le localStorage
+  localStorage.setItem('token', response.data.token);
+  return response.data;
+} catch (error) {
+  return rejectWithValue(error.response.data);
+}
 });
 
 // Action asynchrone pour la connexion d'un utilisateur
@@ -90,30 +101,47 @@ const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(registerUser.pending, (state) => {
-        state.status = 'loading';
-      })
-      .addCase(registerUser.fulfilled, (state, action) => {
-        state.status = 'succeeded';
-        state.user = action.payload.user;
-        state.error = null;
-      })
-      .addCase(registerUser.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.payload.message;
-      })
-      .addCase(loginUser.pending, (state) => {
-        state.status = 'loading';
-      })
-      .addCase(loginUser.fulfilled, (state, action) => {
-        state.status = 'succeeded';
-        state.user = action.payload.user;
-        state.error = null;
-      })
-      .addCase(loginUser.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.payload.message;
-      })
+    .addCase(registerUser.pending, (state) => {
+      state.status = 'loading';
+    })
+    .addCase(registerUser.fulfilled, (state, action) => {
+      state.status = 'succeeded';
+      state.message=action.payload.message
+      state.error = null;
+    })
+    .addCase(registerUser.rejected, (state, action) => {
+      state.status = 'failed';
+      state.message=null
+      state.error = action.payload.message;
+    })
+    .addCase(activateUser.pending, (state) => {
+      state.status = 'loading';
+    })
+    .addCase(activateUser.fulfilled, (state, action) => {
+      state.status = 'succeeded';
+      state.user = action.payload.user;
+      state.message=action.payload.message
+      state.error = null;
+    })
+    .addCase(activateUser.rejected, (state, action) => {
+      state.status = 'failed';
+      state.message=null
+      state.error = action.payload.message;
+    })
+    .addCase(loginUser.pending, (state) => {
+      state.status = 'loading';
+    })
+    .addCase(loginUser.fulfilled, (state, action) => {
+      state.status = 'succeeded';
+      state.user = action.payload.user;
+      state.message=action.payload.message
+      state.error = null;
+    })
+    .addCase(loginUser.rejected, (state, action) => {
+      state.status = 'failed';
+      state.message=null
+      state.error = action.payload.message;
+    })
       .addCase(updateUserRole.pending, (state) => {
         state.status = 'loading';
       })

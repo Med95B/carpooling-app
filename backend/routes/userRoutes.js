@@ -1,5 +1,5 @@
 import express from 'express';
-import { register, login ,updateUserRole,updateProfile } from '../controllers/userController.js';
+import { register,activation, login ,updateUserRole,updateProfile } from '../controllers/userController.js';
 import authMiddleware from '../middlewares/authMiddleware.js';
 import uploadProfile from '../middlewares/uploadProfileMiddleware.js';
 
@@ -7,6 +7,8 @@ const router = express.Router();
 
 // Route pour enregistrer un nouvel utilisateur
 router.post('/register', register);
+// route pour lacitavation de nouvel user
+router.post('/activation',activation)
 // Route pour se connecter et obtenir un token JWT
 router.post('/login', login);
 // Mettre a jour le role du user protege avec le middleware

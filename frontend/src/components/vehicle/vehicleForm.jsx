@@ -35,6 +35,15 @@ const VehicleForm = () => {
     form.append('vehicleImage', formData.vehicleImage);
     dispatch(createVehicle(form))
     
+    setFormData({
+      make: '',
+      model: '',
+      year: '',
+      driverLicenseImage: '',
+      vehicleRegistrationImage: '',
+      vehicleInsuranceImage: '',
+      vehicleImage: ''
+    });
   };
   
 

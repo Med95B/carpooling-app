@@ -1,5 +1,5 @@
 import Vehicle from '../models/Vehicle.js';
-import sendNewVehicleEmail from '../services/vehicleEmailService.js';
+import sendNewVehicleEmail from '../services/vehicleRegisterMail.js';
 
 // Créer un nouveau véhicule
 export const createVehicle = async (req, res) => {
