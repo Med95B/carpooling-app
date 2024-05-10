@@ -9,7 +9,6 @@ import 'leaflet/dist/leaflet.css'
 const App = () => {
 
 
-  const token = localStorage.getItem('token');
   const dispatch = useDispatch();
   const decodeToken = (token) => {
     try {
@@ -22,8 +21,16 @@ const App = () => {
 
 
 useEffect(()=>{
-  dispatch(setUser(decodeToken(token)))
-},[dispatch,token])
+
+  const token = localStorage.getItem('token');
+  if (token) {
+    const user=decodeToken(token)
+    console.log(user);
+    dispatch(setUser(user))
+  
+  }
+  
+},[dispatch])
 
 
   return (

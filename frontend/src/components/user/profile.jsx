@@ -7,26 +7,28 @@ const Profile = () => {
 
   const user = useSelector(selectUser);
   const photoUser=config.baseURL+user.photo
+  console.log(photoUser);
   console.log(user);
+  
   const error=useSelector(selectError)
   const message=useSelector(selectMessage)
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
-    firstName: user.firstName,
-    lastName: user.lastName,
-    email: user.email,
-    phone: user.phone,
-    photo: user.photo ||'',
-    idCardR:user.idCardR||'',
-    idCardV:user.idCardV||''
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    photo: '',
+    idCardR:'',
+    idCardV:''
   });
-
+console.log(formData);
   const [fileReader,setFileReader]=useState({
-  photo: user.photo ||'',
-    idCardR:user.idCardR||'',
-    idCardV:user.idCardV||''
+  photo: '',
+    idCardR:'',
+    idCardV:''
 })
-
+console.log(fileReader);
 const dispatch = useDispatch();
 
   const handleChange = (e) => {
@@ -49,20 +51,33 @@ const dispatch = useDispatch();
 
   const handleEdit = () => {
     setIsEditing(true);
+    setFormData({
+      firstName: user.firstName||'',
+      lastName: user.lastName||'',
+      email: user.email||'',
+      phone: user.phone||'',
+      photo: user.photo||'',
+      idCardR:user.idCardR||'',
+      idCardV:user.idCardV||''
+    })
   };
 
   const handleCancel = () => {
     setIsEditing(false);
     setFormData({
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      phone: user.phone,
-      photo: user.photo,
-      idCardR:user.idCardR,
-      idCardV:user.idCardV
-
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      photo: '',
+      idCardR: '',
+      idCardV: ''
     });
+    setFileReader({
+      photo: '',
+        idCardR:'',
+        idCardV:''
+    })
   };
 
   const handleSubmit = (e) => {
@@ -89,7 +104,7 @@ const dispatch = useDispatch();
     <div className="container mt-5">
       <h2>Profile</h2>
       <div className="card">
-      <img src={photoUser} className="card-img-top mx-auto mt-3" alt="profile"
+      <img src={user.photo?photoUser:''} className="card-img-top mx-auto mt-3" alt="profile"
       style={{width:'200px',height:'200px',objectFit:'cover',borderRadius:'50%'}}
       />
         <div className="card-body">
@@ -101,7 +116,7 @@ const dispatch = useDispatch();
                 className="form-control"
                 id="firstName"
                 name="firstName"
-                value={formData.firstName}
+                value={isEditing?formData.firstName:user.firstName||''}
                 onChange={handleChange}
                 readOnly={!isEditing}
                 required
@@ -114,7 +129,7 @@ const dispatch = useDispatch();
                 className="form-control"
                 id="lastName"
                 name="lastName"
-                value={formData.lastName}
+                value={isEditing?formData.lastName:user.lastName||''}
                 onChange={handleChange}
                 readOnly={!isEditing}
                 required
@@ -127,7 +142,7 @@ const dispatch = useDispatch();
                 className="form-control"
                 id="email"
                 name="email"
-                value={formData.email}
+                value={isEditing?formData.email:user.email||''}
                 onChange={handleChange}
                 readOnly={!isEditing}
                 required
@@ -140,7 +155,7 @@ const dispatch = useDispatch();
                 className="form-control"
                 id="phone"
                 name="phone"
-                value={formData.phone}
+                value={isEditing?formData.phone:user.phone||''}
                 onChange={handleChange}
                 readOnly={!isEditing}
                 required
@@ -159,7 +174,7 @@ const dispatch = useDispatch();
               />
               {fileReader.photo && (
                 <img
-                  src={fileReader.photo}
+                  src={fileReader.photo||''}
                   alt="Profile"
                   className="img-thumbnail mt-2"
                   style={{ maxWidth: '200px' }}
@@ -179,7 +194,7 @@ const dispatch = useDispatch();
               />
               {fileReader.idCardR && (
                 <img
-                  src={fileReader.idCardR}
+                  src={fileReader.idCardR||''}
                   alt="ID CardR"
                   className="img-thumbnail mt-2"
                   style={{ maxWidth: '200px' }}
@@ -199,7 +214,7 @@ const dispatch = useDispatch();
               />
               {fileReader.idCardV && (
                 <img
-                  src={fileReader.idCardV}
+                  src={fileReader.idCardV||''}
                   alt="ID CardV"
                   className="img-thumbnail mt-2"
                   style={{ maxWidth: '200px' }}
